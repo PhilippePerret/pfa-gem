@@ -39,8 +39,16 @@
 207: >
   Le climax doit être défini.
   Utiliser pfa.add(:climax, {t:'h,m,s', d:"<description>"[, duree: <secondes>]})
+208: >
+  La seconde moitié de développement doit être définie.
+  Utiliser pfa.add(:developpement_part2, {t:'h,m,s', d:"<description>"})
 
 220: >
   Le temps sont mal réglés.
   Le temps de :%{key_before} (%{h_before}) devrait être avant le temps de 
   :%{key_after} (%{h_after})…
+
+# --- Image SVG ---
+5000: >
+  L'image '%{path}' n'a pas pu être produite.
+  (pour une raison malheureusement inconnue de nos services…)

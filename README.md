@@ -25,7 +25,7 @@ On commence toujours par instancier un nouveau paradigme.
 ~~~ruby
 require 'pfa'
 
-pfa = PFA.new
+pfa = PFA::new
 ~~~
 
 Ensuite, on le renseigne en lui ajoutant des nœuds :

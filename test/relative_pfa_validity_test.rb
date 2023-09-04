@@ -93,6 +93,7 @@ class RelativePFAValidityTests < Minitest::Test
     pfa.add :incident_declencheur, {t:'0,10,0', d:"Cet ID"}
     pfa.add :pivot1, {t: '0,20,0', d:'Ce pivot', duree: 136}
     pfa.add :developpement_part1, {t: '0,30,0', d:'Ce Dev part 1'}
+    pfa.add :developpement_part2,  {t:'0,70,0',  d:"La deuxième partie du développement"}
     pfa.add :pivot2, {t: '0,80,0', d:'Ce pivot', duree: 11*60}
     err = assert_raises(PFA::PFAFatalError) { pfa.valid? }
     assert_equal(PFA::ERRORS[206], err.message)
@@ -105,6 +106,7 @@ class RelativePFAValidityTests < Minitest::Test
     pfa.add :incident_declencheur, {t:'0,10,0', d:"Cet ID"}
     pfa.add :pivot1, {t: '0,20,0', d:'Ce pivot', duree: 136}
     pfa.add :developpement_part1, {t: '0,30,0', d:'Ce Dev part 1'}
+    pfa.add :developpement_part2,  {t:'0,70,0',  d:"La deuxième partie du développement"}
     pfa.add :pivot2, {t: '0,80,0', d:'Ce pivot', duree: 11*60}
     pfa.add :denouement, {t: '0,90,0', d:'Ce dénouement'}
     err = assert_raises(PFA::PFAFatalError) { pfa.valid? }
@@ -118,6 +120,7 @@ class RelativePFAValidityTests < Minitest::Test
     pfa.add :incident_declencheur, {t:'0,0,15', d:"Cet ID"}
     pfa.add :pivot1, {t: '0,20,0', d:'Ce pivot', duree: 136}
     pfa.add :developpement_part1, {t: '0,30,0', d:'Ce Dev part 1'}
+    pfa.add :developpement_part2,  {t:'0,70,0',  d:"La deuxième partie du développement"}
     pfa.add :pivot2, {t: '0,80,0', d:'Ce pivot', duree: 11*60}
     pfa.add :denouement, {t: '0,90,0', d:'Ce dénouement'}
     pfa.add :climax, {t: '0,110,0', d:'Ce climax'}
@@ -136,6 +139,7 @@ class RelativePFAValidityTests < Minitest::Test
     pfa.add :incident_declencheur, {t:'0,10,0', d:"Cet ID"}
     pfa.add :pivot1, {t: '0,9,0', d:'Ce pivot', duree: 136}
     pfa.add :developpement_part1, {t: '0,30,0', d:'Ce Dev part 1'}
+    pfa.add :developpement_part2,  {t:'0,70,0',  d:"La deuxième partie du développement"}
     pfa.add :pivot2, {t: '0,80,0', d:'Ce pivot', duree: 11*60}
     pfa.add :denouement, {t: '0,90,0', d:'Ce dénouement'}
     pfa.add :climax, {t: '0,110,0', d:'Ce climax'}
@@ -154,6 +158,7 @@ class RelativePFAValidityTests < Minitest::Test
     pfa.add :incident_declencheur, {t:'0,10,0', d:"Cet ID"}
     pfa.add :pivot1, {t: '0,15,0', d:'Ce pivot', duree: 136}
     pfa.add :developpement_part1, {t: '0,12,0', d:'Ce Dev part 1'}
+    pfa.add :developpement_part2,  {t:'0,70,0',  d:"La deuxième partie du développement"}
     pfa.add :pivot2, {t: '0,80,0', d:'Ce pivot', duree: 11*60}
     pfa.add :denouement, {t: '0,90,0', d:'Ce dénouement'}
     pfa.add :climax, {t: '0,110,0', d:'Ce climax'}
@@ -173,6 +178,7 @@ class RelativePFAValidityTests < Minitest::Test
     pfa.add :pivot1, {t: '0,15,0', d:'Ce pivot', duree: 136}
     pfa.add :developpement_part1, {t: '0,30,0', d:'Ce Dev part 1'}
     pfa.add :cle_de_voute, {t: '0,20,0', d:'Cette clé de voute', duree: 11*60}
+    pfa.add :developpement_part2,  {t:'0,70,0',  d:"La deuxième partie du développement"}
     pfa.add :pivot2, {t: '0,80,0', d:'Ce pivot', duree: 11*60}
     pfa.add :denouement, {t: '0,90,0', d:'Ce dénouement'}
     pfa.add :climax, {t: '0,110,0', d:'Ce climax'}

@@ -2,12 +2,18 @@
 # PFA Relatif, donc celui étudié
 # 
 module PFA
+  # Pour pouvoir faire :
+  #   pfa = PFA.new
+  # 
+  def self.new(**params)
+    RelativePFA.new(**params)
+  end
 class RelativePFA
 
   # \Hash Les données du Paradigme de Field Augmenté
   attr_reader :data
 
-  def initialize
+  def initialize(**params)
     @data = {}
   end
 
@@ -73,6 +79,7 @@ class RelativePFA
     incident_declencheur  || raise(PFAFatalError.new(202))
     pivot1                || raise(PFAFatalError.new(203))
     developpement_part1   || raise(PFAFatalError.new(204))
+    developpement_part2   || raise(PFAFatalError.new(208))
     pivot2                || raise(PFAFatalError.new(205))
     denouement            || raise(PFAFatalError.new(206))
     climax                || raise(PFAFatalError.new(207))

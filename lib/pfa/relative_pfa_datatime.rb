@@ -14,6 +14,10 @@ class DataTime
     @time ||= PFA.time_from(@raw_value)
   end
 
+  # Pour la compatibilité quand on boucle sur tous les éléments
+  # des données du paradigme relatif
+  def type; nil end
+
 end #/class DataTime
 end #/class RelativePFA
 end #/module PFA

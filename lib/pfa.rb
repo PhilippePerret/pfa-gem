@@ -9,6 +9,7 @@ require 'pfa/relative_pfa'
 require 'pfa/absolute_pfa'
 require 'pfa/relative_pfa_node'
 require 'pfa/relative_pfa_datatime'
+require 'pfa/svg_builder'
 
 module PFA
 
