@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
 
   s.metadata["allowed_push_host"] = "https://rubygems.org"
 
+  s.add_dependency 'yaml'
   s.add_dependency 'clir'
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'minitest-color'

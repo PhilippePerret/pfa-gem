@@ -1,0 +1,44 @@
+PATH
+  remote: .
+  specs:
+    pfa (0.1.0)
+      clir
+      yaml
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    clir (0.22.1)
+      json
+      tty-prompt
+    json (2.6.3)
+    minitest (5.19.0)
+    minitest-color (0.0.2)
+      minitest (~> 5)
+    pastel (0.8.0)
+      tty-color (~> 0.5)
+    rake (12.3.3)
+    tty-color (0.6.0)
+    tty-cursor (0.7.1)
+    tty-prompt (0.23.1)
+      pastel (~> 0.8)
+      tty-reader (~> 0.8)
+    tty-reader (0.9.0)
+      tty-cursor (~> 0.7)
+      tty-screen (~> 0.8)
+      wisper (~> 2.0)
+    tty-screen (0.8.1)
+    wisper (2.0.1)
+    yaml (0.2.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  minitest (~> 5.0)
+  minitest-color
+  pfa!
+  rake (~> 12.0)
+
+BUNDLED WITH
+   2.1.4
