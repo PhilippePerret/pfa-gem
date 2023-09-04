@@ -7,7 +7,6 @@ class PFADataTests < Minitest::Test
     super
   end
   def teardown
-    
   end
 
   def test_file_data_exists

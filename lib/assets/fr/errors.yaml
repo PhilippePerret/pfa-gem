@@ -1,0 +1,46 @@
+---
+
+# --- Méthodes générales
+
+50: >
+  La valeur %{value} devrait être un Time…
+51: >
+  La valeur %{value} devrait être un nombre de secondes…
+
+52: > # valeur incorrecte pour estimer un temps
+  La valeur %{value} est incorrecte. Il faut un \Time, un \String (de type
+  horloge) ou un \Integer.
+
+# --- Les données du PFA ---
+100: >
+  La clé %{key} est inconnue des données du PFA…
+
+200: >
+  Le zéro doit être défini.
+  Utiliser pfa.add(:zero, 'H+M+S')
+201: >
+  Le temps réel de fin doit être défini.
+  Utiliser pfa.add(:end_time, 'H+M+S')
+202: >
+  L'incident déclencheur doit être défini.
+  Utiliser pfa.add(:incident_declencheur, {t:'h,m,s', d:"<description>"[, duree: <secondes>]})
+203: >
+  Le premier pivot doit être défini.
+  Utiliser pfa.add(:pivot1, {t:'h,m,s', d:"<description>"[, duree: <secondes>]})
+204: >
+  La première partie de développement doit être définie.
+  Utiliser pfa.add(:developpement_part1, {t:'h,m,s', d:"<description>"})
+205: >
+  Le second pivot doit être défini.
+  Utiliser pfa.add(:pivot2, {t:'h,m,s', d:"<description>"[, duree: <secondes>]})
+206: >
+  Le dénouement doit être défini.
+  Utiliser pfa.add(:denouement, {t:'h,m,s', d:"<description>"})
+207: >
+  Le climax doit être défini.
+  Utiliser pfa.add(:climax, {t:'h,m,s', d:"<description>"[, duree: <secondes>]})
+
+220: >
+  Le temps sont mal réglés.
+  Le temps de :%{key_before} (%{h_before}) devrait être avant le temps de 
+  :%{key_after} (%{h_after})…
