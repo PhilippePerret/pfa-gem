@@ -47,6 +47,11 @@ class RelativePFA
     end
   end
 
+  # Définition d'autres valeurs précise (vanilla)
+  # -raccourcis-
+  def zero=(value); add(:zero, value) end
+  def end_time=(value); add(:end_time, value) end
+
   # @return \Bool true si les données relative du PFA sont valides
   # 
   # Donc principalement qu'elles existent et qu'elles soient 

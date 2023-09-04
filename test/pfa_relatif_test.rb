@@ -45,6 +45,22 @@ class RelativePFATests < Minitest::Test
     assert_equal (Time.at(9*60+56)), pfa.data[:incident_declencheur].start_at
   end
 
+  def test_method_zero_egal_permet_de_definir_le_zero
+    assert_respond_to pfa, :zero=
+    assert_nil pfa.zero
+    pfa.zero = '0,0,12'
+    refute_nil pfa.zero
+    assert_equal Time.at(12), pfa.zero, "pfa.zero devrait être un temps à 12 secondes. Il vaut #{pfa.zero.inspect}."
+  end
+
+  def test_method_end_time_egal_permet_de_definir_le_temps_de_fin
+    assert_respond_to pfa, :end_time=
+    assert_nil pfa.end_time
+    pfa.end_time = '2,10,0'
+    refute_nil pfa.end_time
+    assert_equal(Time.at(2*3600+10*60), pfa.end_time, "pfa.end_time devrait être un temps à 2 heures 10. Il vaut #{pfa.end_time.inspect}.")
+  end
+
 
   def test_to_html_produit_le_bon_code
     skip "Implémenter le test de #to_html"

@@ -26,11 +26,11 @@ nodes:
     start_at: 0
     duration: 1/4 # p.e. 30 minutes
     items:    ['prelude', 'incident_perturbateur', 'incident_declencheur', 'zone_refus', 'pivot1']
-  prelude:
+  preambule:
     printed:      true
     required:     false
     id:           "PR"
-    hname:        "Prélude"
+    hname:        "Préambule"
     description:  "Introduction du film, souvent la présentation du personnage et de son contexte de vie."
     start_at:     0
     duration:     1/24 # p.e. 5 mn => fin à 5 mn
@@ -146,7 +146,7 @@ nodes:
     start_at: 3/4
     duration: 1/4
     items: ['premiere_action_den', 'climax', 'desinence']
-  premiere_action_den:
+  premiere_action_denouement:
     printed:      false
     required:     false
     id:           "A3"

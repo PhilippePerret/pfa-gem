@@ -1,8 +1,6 @@
-# Pfa
+# PFA
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/pfa`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+PFA pour "Paradigme de Field Augmenté". Ce gem permet de le gérer de façon simple.
 
 ## Installation
 
@@ -22,7 +20,89 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+On commence toujours par instancier un nouveau paradigme.
+
+~~~ruby
+require 'pfa'
+
+pfa = PFA.new
+~~~
+
+Ensuite, on le renseigne en lui ajoutant des nœuds :
+
+~~~ruby
+pfa.add :incident_declencheur, {t:"0+12+0", d:"Louis tue Harlan, le violeur de Selma"}
+pdf.add :pivot1, {t:"0,23,15", d:"Louise décide de fuir au Mexique."}
+# etc.
+~~~
+
+Il faut aussi définir le "zéro" absolu du film et son temps de fin.
+
+> Ce "zéro" permettra de rectifier tous les temps quelle que soit la vidéo utilisée. Par exemple, ce zéro peut être le timecode de la toute première image du film, ou le timecode de l'apparition du titre.
+> Tous les autres temps seront donnés normalement.
+
+~~~ruby
+
+pfa.zero = "0:00:25"
+pfa.end_time = "1:58:56"
+
+~~~
+
+Pour pouvoir être construit, un *PFA* doit définir au moins les nœuds suivants. Tous ces nœuds doivent être définis avec la méthode `pfa#add` et les deux arguments requis, la clé symbolique (p.e. `:pivot2`) et une table contenant la clé `t:` (timecode), la clé `d:` (description) et optionnellement la clé `:duree` (nombre de secondes).
+
+~~~bash
+:incident_declencheur
+:pivot1
+:developpement_part1
+:pivot2
+:denouement
+:climax
+~~~
+
+> Si un de ces nœuds n'est pas défini, ou que les propriétés `zero` et `end_time` ne sont pas définies, la construction produira une erreur.
+
+La liste complète des clés utilisables et définissables de la même manière est :
+
+~~~bash
+:preambule
+:incident_perturbateur
+:incident_declencheur
+:zone_de_refus
+:pivot1
+:developpement_part1
+:premiere_action
+:premier_tiers
+:cle_de_voute
+:developpement_part2
+:premiere_action_dev2
+:deuxieme_tiers
+:crise
+:pivot2
+:denouement
+:premier_action_denouement
+:climax
+:desinence
+~~~
+
+Une fois les nœuds du paradigme définis, on peut le construire…
+
+* sous forme d'image SVG :
+  
+  ~~~ruby
+  pfa.to_svg
+  ~~~
+
+* sous forme de fichier HTML :
+
+  ~~~ruby
+  pfa.to_html
+  ~~~
+
+### Options de sortie
+
+Des options de sortie (premier argument de  `#to_svg` ou `#to_html`) permettent d'affiner la sortie attendue.
+
+\[À développer]
 
 ## Development
 
@@ -32,5 +112,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/pfa.
+Bug reports and pull requests are welcome on GitHub at https://github.com/PhilippePerret/pfa.
 
