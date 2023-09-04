@@ -8,6 +8,16 @@ module PFA
   def self.new(**params)
     RelativePFA.new(**params)
   end
+
+  # Pour obtenir le PFA courant (au mépris de toute loi de Démeter…)
+  # 
+  def self.current
+    @@current
+  end
+  def self.current=(pfa)
+    @@current = pfa
+  end
+
 class RelativePFA
 
   # \Hash Les données du Paradigme de Field Augmenté
@@ -15,6 +25,7 @@ class RelativePFA
 
   def initialize(**params)
     @data = {}
+    PFA.current = self
   end
 
   def method_missing(method_name, *args, &block)

@@ -55,9 +55,9 @@ class SVGBuilder < AnyBuilder
   # Position verticale des éléments en fonction de leur nature
   # 
   TOPS = {
-    part:     1 * PFA_HEIGHT,      
-    sequence: 3 * PFA_HEIGHT,       
-    noeud:    3 * PFA_HEIGHT
+    part:     1 * LINE_HEIGHT,      
+    sequence: 3 * LINE_HEIGHT,       
+    noeud:    3 * LINE_HEIGHT
   }
 
   #
@@ -184,6 +184,32 @@ class SVGBuilder < AnyBuilder
       cmd << acte.svg_draw_command
     end
 
+    # 
+    # Pour essayer de recomprendre comment ça marche
+    # 
+    # cmd << "-background transparent"
+    # cmd << "-stroke #{DARKERS[:part]}"
+    # cmd << "-fill white"
+    # cmd << "-strokewidth #{BORDERS[:part]}"
+    # # original : -draw "rectangle #{left},#{top} #{right},#{box_bottom}"
+    # cmd << "-draw \"rectangle 10,10 310,110\""
+
+    # cmd << "\\( -stroke #{COLORS[:part]}"
+    # cmd << "-strokewidth #{FONTWEIGHTS[:part]}"
+    # cmd << "-pointsize #{FONTSIZES[:part]}"
+    # # cmd << "-size #{surface}"
+    # cmd << "-size 300x100"
+    # cmd << "label:\"ESSAI\""
+    # cmd << "-background none"
+    # cmd << "-trim"
+    # cmd << "-gravity #{GRAVITIES[:part]}"
+    # # -extent #{surface}
+    # cmd << "-extent 300x100 \\)"
+
+    # cmd << "-gravity northwest"
+    # # cmd << "-geometry +#{left}+#{top}"
+    # cmd << "-geometry +10+10"
+    # cmd << "-composite"
 
     #
     # L'espace de couleur
@@ -194,7 +220,7 @@ class SVGBuilder < AnyBuilder
     # Chemin d'accès au fichier final
     # (en le protégeant)
     # 
-    cmd << image_path.gsub(/ /, "\\ ")
+    cmd << "\"#{image_path.gsub(/ /, "\\ ")}\""
 
     #
     # Mise de la commande sur une seule ligne
@@ -229,9 +255,10 @@ class SVGBuilder < AnyBuilder
     end
   end
 
+
   # @return \String Chemin d'accès au fichier de l'image finale
   def image_path
-    @image_path ||= File.expand_path(File.join('.','pfa.svg'))
+    @image_path ||= File.expand_path(File.join('.','pfa.jpg'))
   end
 
   private

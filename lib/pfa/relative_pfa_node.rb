@@ -75,37 +75,38 @@ class Node
   def parse_raw_value(value)
     @raw_value = value 
     if value.is_a?(Hash)
-      @start_at     = PFA.h2t(value[:t]||value[:time]||value[:start_at])
+      @start_at     = NodeTime.new(value[:t]||value[:time]||value[:start_at], pfa.zero.to_i)
       @description  = value[:d]||value[:description]
       if value.key?(:duree)
         # La durée est fournie en secondes, elle doit donc être 
         # ramenée à la valeur sur 120 minutes
-        @duree = (120 * 60).to_f / (value[:duree]||value[:duration])
+        @duree = NodeTime.new(value[:duree]||value[:duration])
       end
     end
   end
 
   def horloge
-    @horloge ||= PFA.t2h(start_at)
+    @horloge ||= start_at.exact.to_horloge
   end
 
   # Le temps de départ ramené à une valeur par rapport à 120 (minutes)
   def start
-    @start ||= (120 * 60).to_f / @start_at.to_i
+    @start ||= start_at.on_120
   end
 
   # Le temps de fin, ramené à une valeur sur 120 (minutes)
   def end
-    @end ||= start + duree
+    @end ||= start + duree.on_120
   end
 
-  # La durée (ramenée à 120) Soit elle a été explicitement définie en
-  # renseignant le noeud, soit on la calcule 
+  # \PFA::NodeTime Durée 
+  # Soit elle a été explicitement définie en renseignant le noeud, 
+  # soit on lui donne la valeur de la durée absolue
   def duree
     @duree ||= abs_duree
   end
   def abs_duree
-    @abs_duree ||= abs_data[:abs_end] - abs_data[:abs_start]
+    @abs_duree ||= PFA::NodeTime.new(abs_data[:abs_end] - abs_data[:abs_start])
   end
 
 
@@ -148,9 +149,9 @@ class Node
   end
 
   def height      ; @height       ||= SVGBuilder::HEIGHTS[type]   end
+  def top         ; @top          ||= SVGBuilder::TOPS[type]      end
   def demiheight  ; @demiheight   ||= height / 2                  end
   def demiwidth   ; @demiwidth    ||= rel_width / 2               end
-  def top         ; @top          ||= SVGBuilder::TOPS[type]      end
   def right       ; @right        ||= rel_left + rel_width        end
   def bottom      ; @bottom       ||= top  + height               end
   def box_bottom  ; @box_bottom   ||= top + 13 * SVGBuilder::LINE_HEIGHT end
@@ -158,6 +159,7 @@ class Node
   def vcenter     ; @vcenter      ||= top + demiheight            end
 
   # === Valeurs calculées ===
+  # 
   def width_px
     @width_px ||= SVGBuilder.realpx(rel_width)
   end
