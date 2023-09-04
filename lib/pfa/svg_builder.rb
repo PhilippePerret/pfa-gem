@@ -201,13 +201,14 @@ class SVGBuilder < AnyBuilder
     # 
     cmd = cmd.join(' ')
     
+    puts "\n\nCommande finale\n#{cmd}".bleu
     #
     # *** EXÉCUTION DE LA COMMANDE ***
     # 
     res = `#{cmd} 2>&1`
 
     puts "res : #{res.inspect}"
-    
+
     #
     # L'image doit avoir été créée
     # 
