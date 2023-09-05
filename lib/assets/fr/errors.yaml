@@ -1,4 +1,6 @@
 ---
+# Pour générer une de ces erreurs, utiliser :
+#   raise PFAFatalError.new(<code>[, <{template valeurs}>])
 
 # --- Méthodes générales
 
@@ -22,6 +24,16 @@
 # --- Les données du PFA ---
 100: >
   La clé %{key} est inconnue des données du PFA…
+101: |
+  Il faut définir les dimensions à utiliser en appelant la méthode
+  build avec une table contenant au moins :as dont la valeur est
+  une des valeurs contenues dans la constante DIMS_CONSTANTS_PER_THING
+  du fichier any_builder.rb ou une table définissant les valeurs
+  :pfa_width, :pfa_height, :pfa_left_margin et :pfa_right_margin
+
+  Par exemple : 
+
+      pfa.build(**{as: real_book})
 
 200: >
   Le zéro doit être défini.

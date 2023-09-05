@@ -2,7 +2,7 @@ require "test_helper"
 
 
 # Pour simplifier les écriture
-ImgBUILDER = PFA::RelativePFA::ImgBuilder
+ImgBUILDER = PFA::RelativePFA::AnyBuilder
 
 class ImgBuilderTests < Minitest::Test
 
@@ -50,7 +50,7 @@ class ImgBuilderTests < Minitest::Test
 
   def test_building_succeeds_with_bonne_data
     define_bon_pfa
-    assert_silent { builder.build }
+    assert_silent { builder.build(as: :real_book) }
   end
 
   def test_calcul_de_la_duree_du_film
@@ -64,8 +64,9 @@ class ImgBuilderTests < Minitest::Test
 
   def test_calcul_du_coefficiant_pixels
     define_bon_pfa
+    builder.init(**{as: :test})
     actual = builder.calc_coefficient_pixels
-    expected = 4000.0 / (2 * 3600 - 20)
+    expected = (4000.0 - 2 * 20) / (2 * 3600 - 20)
     puts "\nCoefficiant : #{expected}".bleu
     assert_equal expected, actual, "Le coefficiant-pixels devrait valoir #{expected}. Il vaut #{actual}…"
   end
@@ -83,7 +84,7 @@ class ImgBuilderTests < Minitest::Test
   def test_methode_calcul_to_px
     define_bon_pfa
     cdv = pfa.cle_de_voute
-    builder.init
+    builder.init(**{as: :test})
     assert_respond_to cdv.start_at, :to_px
     expected  = (3580 * ((ImgBUILDER::PFA_WIDTH - ImgBUILDER::PFA_LEFT_MARGIN - ImgBUILDER::PFA_RIGHT_MARGIN).to_f / (2 * 3600 - 20))).to_i
     actual    = cdv.start_at.to_px(pfa)

@@ -13,8 +13,9 @@ class ImgBuilder < AnyBuilder
 
 
   # Initialisation avant la construction
-  def init
-    # COEF_PIXELS =  / (120 * 60)
+  def init(**params)
+    params[:as].is_a?(Symbol) || params[:as].is_a?(Hash) || raise(PFAFatalError.new(101))
+    RelativePFA::AnyBuilder.define_dims_constants(params[:as])
   end
 
   def coef_pixels
@@ -27,7 +28,15 @@ class ImgBuilder < AnyBuilder
   ##########################################
   # Construction de l'image du paradigme
   # 
-  def build(**options)
+  # @param params [Hash]
+  #     :as     La chose à construire, permettant de définir les
+  #             dimensions de l'image et les dimensions principales. 
+  #             Mettre :real_book ou :test pour des dimensions 
+  #             différentes et connu.
+  #             Cf. le fichier any_builder.rb pour voir les valeurs
+  #             possible.
+  # 
+  def build(**params)
     #
     # Le PFA doit être défini au minimum et ses données doivent être
     # valides.
@@ -35,10 +44,10 @@ class ImgBuilder < AnyBuilder
     pfa.valid?
 
     #
-    # On doit calculer le coefficient pixels par rapport à la durée
-    # du film
+    # Initialisation de la construction. On doit par exemple fournir
+    # les dimensions à utiliser à l'aide options[:as]
     #
-    init
+    init(**params)
 
     #
     #
@@ -61,7 +70,7 @@ class ImgBuilder < AnyBuilder
     xc:white
     -units PixelsPerInch
     -density 300
-    -background white 
+    -background transparent 
     -stroke black
     CMD
 
@@ -69,7 +78,7 @@ class ImgBuilder < AnyBuilder
     # Le fond, avec les actes
     # 
     actes.each do |acte|
-      cmd += acte.img_draw_command
+      # cmd += acte.img_draw_command
     end
 
     # 
@@ -169,7 +178,7 @@ class ImgBuilder < AnyBuilder
   # Produira la constant COEF_PIXELS
   # 
   def calc_coefficient_pixels
-    (PFA_WIDTH - PFA_LEFT_MARGIN - PFA_RIGHT_MARGIN).to_f / pfa.duree.to_i
+    (PFA_WIDTH - PFA_LEFT_MARGIN - PFA_RIGHT_MARGIN).to_f / pfa.duration.to_i
   end
 
 
