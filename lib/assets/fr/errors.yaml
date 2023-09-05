@@ -56,7 +56,12 @@
   Le temps de :%{key_before} (%{h_before}) devrait être avant le temps de 
   :%{key_after} (%{h_after})…
 
-# --- Image SVG ---
+# --- Image (building) ---
+
 5000: >
   L'image '%{path}' n'a pas pu être produite.
   (pour une raison malheureusement inconnue de nos services…)
+
+5001: >
+  Une erreur s'est produite avec la commande `convert' :
+  %{error}.

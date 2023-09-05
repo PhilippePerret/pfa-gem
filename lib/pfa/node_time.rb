@@ -45,7 +45,7 @@ class NTime
 
   # Retourne la valeur en pixels pour le temps courant (ou la durée)
   def to_px(pfa)
-    (self.to_i * pfa.svg_builder.coef_pixels).to_i
+    (self.to_i * pfa.img_builder.coef_pixels).to_i
   end
 
   # [PFA::NTime] Le temps relatif (à l'écran)

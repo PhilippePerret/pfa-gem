@@ -23,6 +23,7 @@ nodes:
     printed:      true
     required:     true
     id:           'EX'
+    hname:        'EXPOSITION'
     type:         part
     abs_start:    0
     abs_duration: 1/4 # p.e. 30 minutes

@@ -4,32 +4,7 @@
 require_relative 'any_builder'
 module PFA
 class RelativePFA
-class SVGBuilder < AnyBuilder
-
-  # --- CONSTANTES POUR SVG ---
-
-
-  #
-  # Coefficiant pixel pour l'affichage
-  # 
-  # On multiplie le nombre de faux-pixels (120 par film) par ce nombre
-  # pour obtenir la position ou la dimension des éléments dans l'image
-  # SVG
-  # 
-  # COEF_PIXELS = (PFA_WIDTH - PFA_LEFT_MARGIN - PFA_RIGHT_MARGIN).to_f / (120 * 60)
-  # NON : MAINTENANT ON LE CALCULE EN FONCTION DE LA DURÉE DU FILM
-
-  def self.realpos(val)
-    (PFA_LEFT_MARGIN + realpx(val)).to_i
-  end
-
-  # Return le nombre de pixels en fonction du nombre de secondes +secs+
-  def self.s2px(secs)
-    (secs * COEF_PIXELS).to_i
-  end
-  class << self
-    alias :realpx :s2px
-  end
+class ImgBuilder < AnyBuilder
 
 
   # -- Commande ImageMagick --
@@ -50,7 +25,7 @@ class SVGBuilder < AnyBuilder
   ##########################################
   ### MÉTHODE PRINCIPALE DE CONSTRUCTION ###
   ##########################################
-  # Construction de l'image SVG du paradigme
+  # Construction de l'image du paradigme
   # 
   def build(**options)
     #
@@ -85,8 +60,7 @@ class SVGBuilder < AnyBuilder
     # Le fond, avec les actes
     # 
     actes.each do |acte|
-      puts "Traitement de l'acte #{acte.mark.inspect}"
-      cmd << acte.svg_draw_command
+      cmd << acte.img_draw_command
     end
 
     # 
@@ -132,13 +106,17 @@ class SVGBuilder < AnyBuilder
     # 
     cmd = cmd.join(' ')
     
-    puts "\n\nCommande finale\n#{cmd}".bleu
+    STDOUT.write "\n\nCommande finale\n#{cmd}\n".bleu
+
     #
     # *** EXÉCUTION DE LA COMMANDE ***
     # 
-    res = `#{cmd} 2>&1`
+    res_err = `#{cmd} 2>&1`
 
-    puts "res : #{res.inspect}"
+    unless res_err.nil? || res_err.empty?
+      raise PFAFatalError.new(5001, *{error: res_err})
+      # STDOUT.write  "res : #{res.inspect}\n".rouge
+    end
 
     #
     # L'image doit avoir été créée
@@ -164,6 +142,7 @@ class SVGBuilder < AnyBuilder
   # @return \String Chemin d'accès au fichier de l'image finale
   def image_path
     @image_path ||= File.expand_path(File.join('.','pfa.jpg'))
+    # @image_path ||= File.expand_path(File.join('.','pfa.img'))
   end
 
   # @private
@@ -177,6 +156,6 @@ class SVGBuilder < AnyBuilder
   end
 
 
-end #/class SVGBuilder
+end #/class ImgBuilder
 end #/class RelativePFA
 end #/module PFA

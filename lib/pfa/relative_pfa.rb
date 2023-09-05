@@ -9,14 +9,14 @@ module PFA
     RelativePFA.new(**params)
   end
 
-  # Pour obtenir le PFA courant (au mépris de toute loi de Démeter…)
-  # 
-  def self.current
-    @@current
-  end
-  def self.current=(pfa)
-    @@current = pfa
-  end
+  # # Pour obtenir le PFA courant (au mépris de toute loi de Démeter…)
+  # # 
+  # def self.current
+  #   @@current
+  # end
+  # def self.current=(pfa)
+  #   @@current = pfa
+  # end
 
 class RelativePFA
 
@@ -25,7 +25,7 @@ class RelativePFA
 
   def initialize(**params)
     @data = {}
-    PFA.current = self
+    # PFA.current = self
   end
 
   def method_missing(method_name, *args, &block)
@@ -147,12 +147,12 @@ class RelativePFA
     puts "Je dois apprendre à sortir en HTML".orange
   end
 
-  def to_svg
-    svg_builder.build
+  def to_img
+    img_builder.build
   end
 
-  def svg_builder
-    @svg_builder ||= SVGBuilder.new(self)
+  def img_builder
+    @img_builder ||= ImgBuilder.new(self)
   end
 
 end #/ class RelativePFA

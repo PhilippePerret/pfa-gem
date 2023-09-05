@@ -86,10 +86,10 @@ La liste complète des clés utilisables et définissables de la même manière 
 
 Une fois les nœuds du paradigme définis, on peut le construire…
 
-* sous forme d'image SVG :
+* sous forme d'image JPEG (de 4000x1000 en 300ppi) :
   
   ~~~ruby
-  pfa.to_svg
+  pfa.to_img
   ~~~
 
 * sous forme de fichier HTML :
@@ -100,7 +100,7 @@ Une fois les nœuds du paradigme définis, on peut le construire…
 
 ### Options de sortie
 
-Des options de sortie (premier argument de  `#to_svg` ou `#to_html`) permettent d'affiner la sortie attendue.
+Des options de sortie (premier argument de  `#to_img` ou `#to_html`) permettent d'affiner la sortie attendue.
 
 \[À développer]
 

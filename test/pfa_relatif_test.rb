@@ -23,7 +23,7 @@ class RelativePFATests < Minitest::Test
 
   def test_instance_respond_to_methods
     [
-      :valid?, :add, :to_html, :to_svg,
+      :valid?, :add, :to_html, :to_img,
     ].each do |methode|
       assert_respond_to(pfa, methode, "L'instance RelativePFA devrait répondre à la méthode ##{methode}…" )
     end
@@ -67,7 +67,7 @@ class RelativePFATests < Minitest::Test
     @pfa = nil
   end
 
-  def test_to_svg_produit_la_bonne_image
-    skip "Implémenter le test de #to_svg"
+  def test_to_img_produit_la_bonne_image
+    skip "Implémenter le test de #to_img"
   end
 end #/Minitest::Test

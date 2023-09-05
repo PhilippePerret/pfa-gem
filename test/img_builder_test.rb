@@ -2,9 +2,9 @@ require "test_helper"
 
 
 # Pour simplifier les écriture
-SVGBUILDER = PFA::RelativePFA::SVGBuilder
+ImgBUILDER = PFA::RelativePFA::ImgBuilder
 
-class SVGBuilderTests < Minitest::Test
+class ImgBuilderTests < Minitest::Test
 
   def setup
     super
@@ -32,15 +32,15 @@ class SVGBuilderTests < Minitest::Test
     @pfa ||= PFA.new
   end
   def builder
-    @builder ||= pfa.svg_builder
+    @builder ||= pfa.img_builder
   end
 
   def test_if_builder_exists
-    assert defined?(PFA::RelativePFA::SVGBuilder)
+    assert defined?(PFA::RelativePFA::ImgBuilder)
   end
 
   def test_if_respond_to_build
-    assert_respond_to pfa, :to_svg 
+    assert_respond_to pfa, :to_img 
   end
 
   def test_the_builder_methods
@@ -48,7 +48,7 @@ class SVGBuilderTests < Minitest::Test
   end
 
 
-  def test_builder_succeeds_with_bonne_data
+  def test_building_succeeds_with_bonne_data
     define_bon_pfa
     assert_silent { builder.build }
   end
@@ -65,7 +65,8 @@ class SVGBuilderTests < Minitest::Test
   def test_calcul_du_coefficiant_pixels
     define_bon_pfa
     actual = builder.calc_coefficient_pixels
-    expected = 0.5153203342618384
+    expected = 4000.0 / (2 * 3600 - 20)
+    puts "\nCoefficiant : #{expected}".bleu
     assert_equal expected, actual, "Le coefficiant-pixels devrait valoir #{expected}. Il vaut #{actual}…"
   end
 
@@ -75,7 +76,7 @@ class SVGBuilderTests < Minitest::Test
     cdv = pfa.cle_de_voute
     assert_instance_of PFA::NTime, cdv.start_at
     expected = '0:59:40'
-    actual   = cdv.start_at.exact.to_horloge
+    actual   = cdv.start_at.to_horloge
     assert_equal(expected, actual, "La valeur de cdv.start_at.to_real.to_horloge devrait être #{expected}. Elle vaut #{actual}…")
   end
 
@@ -84,8 +85,8 @@ class SVGBuilderTests < Minitest::Test
     cdv = pfa.cle_de_voute
     builder.init
     assert_respond_to cdv.start_at, :to_px
-    expected  = 3580 * ((SVGBUILDER::PFA_WIDTH - SVGBUILDER::PFA_LEFT_MARGIN - SVGBUILDER::PFA_RIGHT_MARGIN).to_f / (2 * 3600 - 20))
-    actual    = cdv.start_at.to_px
+    expected  = (3580 * ((ImgBUILDER::PFA_WIDTH - ImgBUILDER::PFA_LEFT_MARGIN - ImgBUILDER::PFA_RIGHT_MARGIN).to_f / (2 * 3600 - 20))).to_i
+    actual    = cdv.start_at.to_px(pfa)
     assert_equal(expected, actual, "La valeur de cdv.to_px devrait être de #{expected}. Elle vaut #{actual}…")
   end
 end #/Minitest::Test

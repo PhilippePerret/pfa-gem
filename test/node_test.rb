@@ -54,7 +54,7 @@ class NodeTests < Minitest::Test
     # 
     pfa_width = PFA::RelativePFA::AnyBuilder::PFA_WIDTH
     # puts "\npfa_width = #{pfa_width}".bleu
-    coef_pixels = pfa.svg_builder.coef_pixels
+    coef_pixels = pfa.img_builder.coef_pixels
     # puts "coef_pixels = #{coef_pixels}".bleu
 
     # 

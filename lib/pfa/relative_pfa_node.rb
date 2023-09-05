@@ -14,56 +14,56 @@ class Node
   end
 
 
-  # @return la commande pour construire le fichier SVG
+  # @return la commande pour construire le fichier de l'image
   # 
-  def svg_draw_command
+  def img_draw_command
     <<~CMD.gsub(/\n/,' ').strip
-    #{send("svg_lines_for_#{type}".to_sym)}
+    #{send("img_lines_for_#{type}".to_sym)}
     \\(
-    -stroke #{SVGBuilder::COLORS[type]}
-    -strokewidth #{SVGBuilder::FONTWEIGHTS[type]}
-    -pointsize #{SVGBuilder::FONTSIZES[type]}
-    -size #{svg_surface}
+    -stroke #{AnyBuilder::COLORS[type]}
+    -strokewidth #{AnyBuilder::FONTWEIGHTS[type]}
+    -pointsize #{AnyBuilder::FONTSIZES[type]}
+    -size #{img_surface}
     label:"#{mark}"
     -background none
     -trim
-    -gravity #{SVGBuilder::GRAVITIES[type]}
-    -extent #{svg_surface}
+    -gravity #{AnyBuilder::GRAVITIES[type]}
+    -extent #{img_surface}
     \\)
     -gravity northwest
-    -geometry +#{left_px}+#{top}
+    -geometry +#{left}+#{top}
     -composite
     CMD
   end
 
 
   # La marque pour une partie (un rectangle)
-  def svg_lines_for_part
+  def img_lines_for_part
     <<~CMD
     -background transparent
-    -stroke #{SVGBuilder::DARKERS[:part]}
+    -stroke #{AnyBuilder::DARKERS[:part]}
     -fill white
-    -strokewidth #{SVGBuilder::BORDERS[:part]}
-    -draw "rectangle #{left_px},#{top_px} #{right_px},#{box_bottom}"
+    -strokewidth #{AnyBuilder::BORDERS[:part]}
+    -draw "rectangle #{left},#{top} #{right},#{box_bottom}"
     CMD
   end
 
   # La marque pour une séquence (un crochet allongé)
-  def svg_lines_for_sequence
+  def img_lines_for_sequence
     <<~CMD
-    -strokewidth #{SVGBuilder::BORDERS[:seq]}
-    -stroke #{SVGBuilder::COLORS[:seq]}
+    -strokewidth #{AnyBuilder::BORDERS[:seq]}
+    -stroke #{AnyBuilder::COLORS[:seq]}
     -fill white
-    -draw "polyline #{left_px+4},#{top+demiheight} #{left_px+4},#{bottom} #{right_px-4},#{bottom} #{right_px-4},#{top+demiheight}"
+    -draw "polyline #{left+4},#{top+demiheight} #{left+4},#{bottom} #{right-4},#{bottom} #{right-4},#{top+demiheight}"
     #{mark_horloge}
     CMD
   end
 
   # La marque pour un nœud (un rond/point)
-  def svg_lines_for_noeud
+  def img_lines_for_noeud
     <<~CMD
-    -strokewidth #{SVGBuilder::BORDERS[:noeud]}
-    -stroke #{SVGBuilder::COLORS[:noeud]}
+    -strokewidth #{AnyBuilder::BORDERS[:noeud]}
+    -stroke #{AnyBuilder::COLORS[:noeud]}
     -fill white
     -draw "roundrectangle #{left},#{top} #{right},#{bottom} 10,10"
     #{mark_horloge}
@@ -185,8 +185,8 @@ class Node
   # --- Calculated Values (dimensions) ---
 
 
-  def svg_surface
-    @svg_surface ||= "#{width}x#{height}"
+  def img_surface
+    @img_surface ||= "#{width}x#{height}"
   end
 
   # -- Des valeurs qui peuvent servir… --
@@ -199,7 +199,7 @@ class Node
   def bottom          ; @bottom       ||= top + height              end
   def abs_bottom      ; @abs_bottom   ||= abs_top + height          end
   # Le bas ultime du paradigme ?
-  def box_bottom      ; @box_bottom   ||= top + 13 * SVGBuilder::LINE_HEIGHT end
+  def box_bottom      ; @box_bottom   ||= top + 13 * ImgBuilder::LINE_HEIGHT end
 
 
   private

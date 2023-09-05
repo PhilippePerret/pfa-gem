@@ -4,7 +4,7 @@ class AnyBuilder
 
   #
   # Largeur totale du graphique
-  # (noter que les dimensions sont les mêmes pour l'image JPG/SVG et 
+  # (noter que les dimensions sont les mêmes pour l'image JPG et 
   # l'image HTML)
   #  
   PFA_WIDTH   = 4000 # 4000px (en 300dpi)
