@@ -89,7 +89,7 @@ class Node
   # -- Dimensions Absolues --
 
   def abs_left
-    @abs_left ||= abs_start.to_px(pfa)
+    @abs_left ||= abs_start.to_px(pfa)#.tap { |n| dbg "abs_left: #{n}".bleu}
   end
 
   def abs_width
@@ -102,6 +102,18 @@ class Node
 
   def abs_top
     @abs_top ||= AnyBuilder::ABS_TOPS[type]
+  end
+
+  def abs_bottom
+    @abs_bottom ||= AnyBUILDER::ABS_BOTTOMS[type]
+  end
+
+  def abs_height
+    @abs_height ||= AnyBuilder::HEIGHTS[type]
+  end
+
+  def img_abs_surface
+    @img_abs_surface ||= "#{abs_width}x#{abs_height}"
   end
 
   # -- Dimensions Relatives --
@@ -122,9 +134,17 @@ class Node
     @top ||= AnyBuilder::TOPS[type]
   end
 
+  def bottom
+    @bottom ||= AnyBUILDER::BOTTOMS[type]
+  end
+  
   # Hauteur de la boite pour écrire le texte
   def height
     @height ||= AnyBuilder::HEIGHTS[type]
+  end
+
+  def img_surface
+    @img_surface ||= "#{width}x#{height}"
   end
 
 
@@ -157,9 +177,6 @@ class Node
   # --- Calculated Values (dimensions) ---
 
 
-  def img_surface
-    @img_surface ||= "#{width}x#{height}"
-  end
 
   # -- Des valeurs qui peuvent servir… --
   def demiheight      ; @demiheight   ||= height / 2                end
@@ -168,8 +185,6 @@ class Node
   def hcenter         ; @hcenter      ||= left  + demiwidth         end
   def abs_hcenter     ; @abshcenter   ||= abs_left + abs_demiwidth  end
   def vcenter         ; @vcenter      ||= top   + demiheight        end
-  def bottom          ; @bottom       ||= top + height              end
-  def abs_bottom      ; @abs_bottom   ||= abs_top + height          end
   # Le bas ultime du paradigme ?
   def box_bottom      ; @box_bottom   ||= top + 13 * ImgBuilder::LINE_HEIGHT end
 

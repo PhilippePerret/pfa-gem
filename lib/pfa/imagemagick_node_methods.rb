@@ -38,23 +38,25 @@ module ImageMagicNodesMethodes
     -stroke #{AnyBUILDER::COLORS[type]}
     -strokewidth #{AnyBUILDER::ABS_FONTWEIGHTS[type]}
     -pointsize #{AnyBUILDER::ABS_FONTSIZES[type]}
-    -size #{img_surface}
+    -size #{img_abs_surface}
     label:"#{mark}"
     -background none
     -trim
     -gravity #{AnyBUILDER::GRAVITIES[type]}
-    -extent #{img_surface}
+    -extent #{img_abs_surface}
     \\)
     -gravity northwest
-    -geometry +#{abs_left}+#{abs_top}
+    -geometry +#{abs_left}-100
     -composite
     CMD
   end
+  # -geometry +#{abs_left}+#{abs_top}
 
   # @return [Array<BashString>] Les lignes pour construire le noeud,
   # en version relative (i.e. PFA du film)
   def img_draw_command_rel_pfa
     <<~CMD.strip
+    #{send("img_lines_for_rel_#{type}".to_sym)}
     -stroke black
     -strokewidth 3
     -fill black
@@ -82,12 +84,24 @@ module ImageMagicNodesMethodes
 
   # La marque pour une partie absolue (un rectangle)
   def img_lines_for_abs_part
+    # La boite de l'acte idéal
     <<~CMD.strip
     -background transparent
     -stroke #{AnyBUILDER::DARKERS[:part]}
     -fill white
     -strokewidth #{AnyBUILDER::ABS_BORDERS[:part]}
-    -draw "rectangle #{abs_left},#{abs_top} #{abs_right},#{abs_top + 4 * AnyBUILDER::LINE_HEIGHT}"
+    -draw "rectangle #{abs_left},#{abs_top} #{abs_right},#{abs_bottom}"
+    CMD
+  end
+
+  def img_lines_for_rel_part
+    # La boite de l'acte réel
+    <<~CMD.strip
+    -background transparent
+    -stroke #{AnyBUILDER::DARKERS[:part]}
+    -fill white
+    -strokewidth #{AnyBUILDER::ABS_BORDERS[:part]}
+    -draw "rectangle #{left},#{top} #{right},#{bottom}"
     CMD
   end
 

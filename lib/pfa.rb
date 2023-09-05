@@ -1,3 +1,6 @@
+def dbg(str)
+  STDOUT.write("\n#{str}\n")
+end
 require 'clir'
 require 'yaml'
 require 'singleton'

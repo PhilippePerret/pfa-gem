@@ -47,11 +47,23 @@ class AnyBuilder
     noeud:        3 * LINE_HEIGHT,
     top_horloge:  LINE_HEIGHT - 10
   }
+  ABS_BOTTOMS = {
+    part:         ABS_TOPS[:part]     + 6 * LINE_HEIGHT,
+    sequence:     ABS_TOPS[:sequence] + 6 * LINE_HEIGHT,
+    noeud:        ABS_TOPS[:noeud]    + 6 * LINE_HEIGHT,
+  }
+
   TOPS = {
-    part:         ABS_TOPS[:part]         + VOFFSET_REL_PFA,
+    part:         ABS_BOTTOMS[:part],
     sequence:     ABS_TOPS[:sequence]     + VOFFSET_REL_PFA,  
     noeud:        ABS_TOPS[:noeud]        + VOFFSET_REL_PFA,
-    top_horloge:  ABS_TOPS[:top_horloge]  + VOFFSET_REL_PFA
+    top_horloge:  ABS_TOPS[:top_horloge]  + VOFFSET_REL_PFA,
+  }
+  
+  BOTTOMS = {
+    part:       ABS_BOTTOMS[:part] + VOFFSET_REL_PFA,
+    sequence:   ABS_BOTTOMS[:sequence] + VOFFSET_REL_PFA,
+    noeud:      ABS_BOTTOMS[:noeud] + VOFFSET_REL_PFA,
   }
 
   RECTIFS = {
@@ -64,7 +76,7 @@ class AnyBuilder
   # Hauteur en fonction du type des éléments 
   # 
   HEIGHTS = { 
-    part:     PFA_HEIGHT/1.4,
+    part:     PFA_HEIGHT / 1.4,
     sequence: 50, # PFA::LINE_HEIGHT (dans fichier relatif)
     noeud:    50  # idem
   }
