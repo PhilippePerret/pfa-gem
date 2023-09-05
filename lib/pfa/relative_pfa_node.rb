@@ -1,6 +1,10 @@
+require_relative 'imagemagick_node_methods'
+
 module PFA
 class RelativePFA
 class Node
+
+  include ImageMagicNodesMethodes
 
   attr_reader :pfa, :key
 
@@ -14,39 +18,7 @@ class Node
   end
 
 
-  # @return la commande pour construire le fichier de l'image
-  # 
-  def img_draw_command
-    <<~CMD.gsub(/\n/,' ').strip
-    #{send("img_lines_for_#{type}".to_sym)}
-    \\(
-    -stroke #{AnyBuilder::COLORS[type]}
-    -strokewidth #{AnyBuilder::FONTWEIGHTS[type]}
-    -pointsize #{AnyBuilder::FONTSIZES[type]}
-    -size #{img_surface}
-    label:"#{mark}"
-    -background none
-    -trim
-    -gravity #{AnyBuilder::GRAVITIES[type]}
-    -extent #{img_surface}
-    \\)
-    -gravity northwest
-    -geometry +#{left}+#{top}
-    -composite
-    CMD
-  end
 
-
-  # La marque pour une partie (un rectangle)
-  def img_lines_for_part
-    <<~CMD
-    -background transparent
-    -stroke #{AnyBuilder::DARKERS[:part]}
-    -fill white
-    -strokewidth #{AnyBuilder::BORDERS[:part]}
-    -draw "rectangle #{left},#{top} #{right},#{box_bottom}"
-    CMD
-  end
 
   # La marque pour une séquence (un crochet allongé)
   def img_lines_for_sequence
@@ -94,7 +66,7 @@ class Node
 
   # [String] Horloge du temps (relatif) de départ
   def horloge
-    @horloge ||= start_at.exact.to_horloge
+    @horloge ||= start_at.to_horloge
   end
 
   # -- Temps Absolus --
@@ -230,7 +202,7 @@ class Node
   #     1/2 - 1/24
   # 
   def calc_with_fraction_of_duree(fraction_str)
-    fraction = eval(fraction_str.gsub(/\//,'.0/')) # p.e. 1/24 => 1.0/24
+    fraction = eval(fraction_str.to_s.gsub(/\//,'.0/')) # p.e. 1/24 => 1.0/24
     return PFA::NTime.new(pfa.duration.to_i * fraction, 0)
   end
 

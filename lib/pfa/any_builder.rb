@@ -36,7 +36,7 @@ class AnyBuilder
   # Différence en hauteur du paradigme réel par rapport au paradigme
   # idéal
   # 
-  VOFFSET_REL_PFA = 6 * LINE_HEIGHT
+  VOFFSET_REL_PFA = 9 * LINE_HEIGHT
 
   #
   # Position verticale des éléments en fonction de leur nature
@@ -54,32 +54,49 @@ class AnyBuilder
     top_horloge:  ABS_TOPS[:top_horloge]  + VOFFSET_REL_PFA
   }
 
+  RECTIFS = {
+    part:         50, 
+    sequence:     0, 
+    noeud:        0
+  }
+
   #
   # Hauteur en fonction du type des éléments 
   # 
   HEIGHTS = { 
     part:     PFA_HEIGHT/1.4,
-    sequence: 50,
-    noeud:    50
+    sequence: 50, # PFA::LINE_HEIGHT (dans fichier relatif)
+    noeud:    50  # idem
   }
 
   #
   # Taille de police en fonction du type de l'élément
   # 
-  FONTSIZES = {
+  ABS_FONTSIZES = {
     part:     10,
     sequence: 8,
+    noeud:    7
+  }
+  FONTSIZES = {
+    part:     7, 
+    sequence: 7, 
     noeud:    7
   }
 
   #
   # Graisse de la police en fonction du type de l'élément
   # 
-  FONTWEIGHTS = {
+  ABS_FONTWEIGHTS = {
     part:     3,
     sequence: 2,
     noeud:    1
   }
+  FONTWEIGHTS = { 
+    part:     1,
+    sequence: 1, 
+    noeud:    1 
+  }
+  
 
   #
   # Couleur en fonction du type de l'élément
@@ -111,9 +128,14 @@ class AnyBuilder
   #
   # Largeur des bords en fonction du type de l'élément
   # 
-  BORDERS = {
+  ABS_BORDERS = {
     part:     3,
     sequence: 2,
+    noeud:    1
+  }
+  BORDERS = {
+    part:     1,
+    sequence: 1, 
     noeud:    1
   }
 

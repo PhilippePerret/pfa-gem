@@ -53,6 +53,38 @@ class NTime
     @relative ||= NTime.new(secondes + zero_offset, 0)
   end
 
+  # --- Helpers Methods ---
+
+  # @retour [BashString] Le code pour écrire l'horloge dans une 
+  # image avec ImageMagick pour le noeud +node+
+  # 
+  # @param [PFA::RelativePFA::Node] node Le nœud de l'horloge
+  # @param [Hash] options 
+  #     Plus tard, pourra redéfinir :bg_color et :color
+  # 
+  def as_img_horloge_code(node, **options)
+    <<~CMD.strip
+    \\(
+    -background #{options[:bg_color]||'white'}
+    -stroke #{options[:color]||'gray20'}
+    -fill #{options[:color]||'gray20'}
+    -strokewidth 1
+    -pointsize 6.5
+    -size #{surface}
+    -gravity Center
+    label:"#{to_horloge}"
+    -extent #{surface}
+    \\)
+    -gravity northwest
+    -geometry +#{node.left}+#{node.top}
+    -composite
+    CMD
+  end
+
+  def surface
+    @surface ||= "#{PFA::RelativePFA::AnyBuilder::PFA_WIDTH/35}x50"
+  end
+
   # --- Operation Methods ---
 
   # Addition

@@ -50,17 +50,26 @@ class ImgBuilder < AnyBuilder
     # Construction du code pour Image Magick
     # (dans cmd)
     # 
-    cmd = []
-    cmd << "#{CONVERT_CMD} -size #{PFA_WIDTH}x#{PFA_HEIGHT}"
-    cmd << "xc:white"
-    cmd << "-units PixelsPerInch -density 300"
-    cmd << "-background white -stroke black"
+    # cmd = []
+    # cmd << "#{CONVERT_CMD} -size #{PFA_WIDTH}x#{PFA_HEIGHT}"
+    # cmd << "xc:white"
+    # cmd << "-units PixelsPerInch -density 300"
+    # cmd << "-background white -stroke black"
+    cmd = <<~CMD.strip
+    #{CONVERT_CMD}
+    -size #{PFA_WIDTH}x#{PFA_HEIGHT}
+    xc:white
+    -units PixelsPerInch
+    -density 300
+    -background white 
+    -stroke black
+    CMD
 
     #
     # Le fond, avec les actes
     # 
     actes.each do |acte|
-      cmd << acte.img_draw_command
+      cmd += acte.img_draw_command
     end
 
     # 
@@ -93,29 +102,37 @@ class ImgBuilder < AnyBuilder
     #
     # L'espace de couleur
     # 
-    cmd << "-set colorspace sRGB"
+    cmd << "\n-set colorspace sRGB"
 
     #
     # Chemin d'accès au fichier final
     # (en le protégeant)
     # 
-    cmd << "\"#{image_path.gsub(/ /, "\\ ")}\""
+    cmd << " \"#{image_path.gsub(/ /, "\\ ")}\""
+
+    # STDOUT.write "\n\ncmd à la fin =\n++++\n#{cmd}\n+++++\n".orange
 
     #
     # Mise de la commande sur une seule ligne
-    # 
-    cmd = cmd.join(' ')
+    # (je ne parviens pas à mettre la commande sur plusieurs lignes,
+    #  même avec la contre-balance…)
+    cmd_finale = cmd.split("\n").compact.join(" ")
     
-    STDOUT.write "\n\nCommande finale\n#{cmd}\n".bleu
+    
+    # Pour débugger facilement, on met les numéros des lignes
+    
+    cmd_debug = cmd_finale.split("\n").collect.with_index do |line, idx|
+      "#{idx + 1}: #{line.strip}"
+    end.join("\n")
+    STDOUT.write "\n\nCommande finale\n#{cmd_debug}\n".bleu
 
     #
     # *** EXÉCUTION DE LA COMMANDE ***
     # 
-    res_err = `#{cmd} 2>&1`
+    res_err = `#{cmd_finale} 2>&1`
 
     unless res_err.nil? || res_err.empty?
-      raise PFAFatalError.new(5001, *{error: res_err})
-      # STDOUT.write  "res : #{res.inspect}\n".rouge
+      raise PFAFatalError.new(5001, **{error: res_err})
     end
 
     #

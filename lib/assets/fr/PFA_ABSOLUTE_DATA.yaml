@@ -79,7 +79,7 @@ nodes:
     printed:      true
     type:         part
     id:           'D1'
-    hname:        'DÉVELOPPEMENT PART I'
+    hname:        'DÉV. PART I'
     abs_start:    1/4
     abs_duration: 1/4
     items: ['premiere_action', 'premier_tiers', 'cle_de_voute']
@@ -116,10 +116,10 @@ nodes:
     printed:      true
     type:         part
     id:           'D2'
-    hname:        'DÉVELOPPEMENT PART II'
+    hname:        'DÉV. PART II'
     abs_start:    1/2
     abs_duration: 1/4
-    items: ['premiere_action_dev2', 'deuxieme_tiers', 'crise', 'pivot2']
+    items:        ['premiere_action_dev2', 'deuxieme_tiers', 'crise', 'pivot2']
   premiere_action_dev2:
     printed:      false
     required:     false
