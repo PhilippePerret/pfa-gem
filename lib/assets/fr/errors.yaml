@@ -9,12 +9,14 @@
 52: > # valeur incorrecte pour estimer un temps
   La valeur %{value} est incorrecte. Il faut un \Time, un \String (de type
   horloge) ou un \Integer.
-53: > # valeur incorrecte pour initialiser un NodeTime
-  La valeur %{value} est incorrecte pour initialiser un \PFA::NodeTime
+53: > # valeur incorrecte pour initialiser un NTime
+  La valeur %{value} est incorrecte pour initialiser un \PFA::NTime
   Il faut fournir au choix :
-    - un nombre de secondes (\Integer)
-    - un temps (\Time)
-    - une horloge valide (\String)
+    - un nombre de secondes ([Integer|Float])
+    - un temps ([Time])
+    - une horloge valide ([String])
+    - une instance NTime ([PFA::NTime])
+  La valeur fournie est de classe %{classe}.
 
 
 # --- Les données du PFA ---

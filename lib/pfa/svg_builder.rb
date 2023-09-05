@@ -8,31 +8,6 @@ class SVGBuilder < AnyBuilder
 
   # --- CONSTANTES POUR SVG ---
 
-  #
-  # Largeur totale du graphique
-  #  
-  PFA_WIDTH   = 4000 # 4000px (en 300dpi)
-
-  # 
-  # Hauteur du graphique
-  # 
-  PFA_HEIGHT  = PFA_WIDTH / 4
-
-  #
-  # Marge gauche
-  # 
-  PFA_LEFT_MARGIN   = 150
-
-  #
-  # Marge droite du graphique
-  # 
-  PFA_RIGHT_MARGIN  = 150
-
-  #
-  # Hauteur d'une "ligne"
-  # 
-  LINE_HEIGHT = (PFA_HEIGHT.to_f / 15).to_i
-
 
   #
   # Coefficiant pixel pour l'affichage
@@ -41,112 +16,35 @@ class SVGBuilder < AnyBuilder
   # pour obtenir la position ou la dimension des éléments dans l'image
   # SVG
   # 
-  COEF_PIXELS = (PFA_WIDTH - PFA_LEFT_MARGIN - PFA_RIGHT_MARGIN).to_f / 120
+  # COEF_PIXELS = (PFA_WIDTH - PFA_LEFT_MARGIN - PFA_RIGHT_MARGIN).to_f / (120 * 60)
+  # NON : MAINTENANT ON LE CALCULE EN FONCTION DE LA DURÉE DU FILM
 
   def self.realpos(val)
     (PFA_LEFT_MARGIN + realpx(val)).to_i
   end
 
-  def self.realpx(val)
-    (val * COEF_PIXELS).to_i
+  # Return le nombre de pixels en fonction du nombre de secondes +secs+
+  def self.s2px(secs)
+    (secs * COEF_PIXELS).to_i
   end
-
-  #
-  # Position verticale des éléments en fonction de leur nature
-  # 
-  TOPS = {
-    part:     1 * LINE_HEIGHT,      
-    sequence: 3 * LINE_HEIGHT,       
-    noeud:    3 * LINE_HEIGHT
-  }
-
-  #
-  # Hauteur en fonction du type des éléments 
-  # 
-  HEIGHTS = { 
-    part:     PFA_HEIGHT/1.4,
-    sequence: 50,
-    noeud:    50
-  }
-
-  #
-  # Taille de police en fonction du type de l'élément
-  # 
-  FONTSIZES = {
-    part:     10,
-    sequence: 8,
-    noeud:    7
-  }
-
-  #
-  # Graisse de la police en fonction du type de l'élément
-  # 
-  FONTWEIGHTS = {
-    part:     3,
-    sequence: 2,
-    noeud:    1
-  }
-
-  #
-  # Couleur en fonction du type de l'élément
-  # 
-  COLORS = {
-    part:     'gray75',
-    sequence: 'gray55',
-    noeud:    'gray55' 
-  }
-
-  #
-  # Couleur plus sombre en fonction de l'élément
-  # 
-  DARKERS = {
-    part:     'gray50',
-    sequence: 'gray45',
-    noeud:    'gray45' 
-  }
-
-  # 
-  # Gravité en fonction du type de l'élément
-  # 
-  GRAVITIES = {
-    part:     'Center',
-    sequence: 'Center',
-    noeud:    'Center'
-  }
-
-  #
-  # Largeur des bords en fonction du type de l'élément
-  # 
-  BORDERS = {
-    part:     3,
-    sequence: 2,
-    noeud:    1
-  }
-
-  # 
-  # Positions et Dimensions du PFA RELATIF
-  # 
-  REL_PFA_MEASUREMENTS = {
-  
-    top:          7 * LINE_HEIGHT,
-    top_horloge:  7 * LINE_HEIGHT + 10,
-  
-  }.freeze
-
-  #
-  # Positions et dimensions du PFA ABSOLU
-  # 
-  ABS_PFA_MEASUREMENTS = {
-    
-    top_horloge: REL_PFA_MEASUREMENTS[:top] - LINE_HEIGHT + 10
-
-  }
+  class << self
+    alias :realpx :s2px
+  end
 
 
   # -- Commande ImageMagick --
   
   CONVERT_CMD = 'convert' # /usr/local/bin/convert si pas d'alias
 
+
+  # Initialisation avant la construction
+  def init
+    # COEF_PIXELS =  / (120 * 60)
+  end
+
+  def coef_pixels
+    @coef_pixels ||= calc_coefficient_pixels
+  end
 
 
   ##########################################
@@ -161,6 +59,13 @@ class SVGBuilder < AnyBuilder
     # 
     pfa.valid?
 
+    #
+    # On doit calculer le coefficient pixels par rapport à la durée
+    # du film
+    #
+    init
+
+    #
     #
     # Détruire l'image si elle existe déjà
     # 
@@ -261,8 +166,15 @@ class SVGBuilder < AnyBuilder
     @image_path ||= File.expand_path(File.join('.','pfa.jpg'))
   end
 
-  private
+  # @private
 
+  # Calcule le coefficiant pixels qui permet de convertir un temps
+  # quelconque en pixels en fonction de la durée du film analysé.
+  # Produira la constant COEF_PIXELS
+  # 
+  def calc_coefficient_pixels
+    (PFA_WIDTH - PFA_LEFT_MARGIN - PFA_RIGHT_MARGIN).to_f / pfa.duree.to_i
+  end
 
 
 end #/class SVGBuilder

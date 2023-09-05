@@ -11,7 +11,7 @@ class DataTime
   end
 
   def time
-    @time ||= PFA.time_from(@raw_value)
+    @time ||= PFA::NTime.new(@raw_value, 0)
   end
 
   # Pour la compatibilité quand on boucle sur tous les éléments

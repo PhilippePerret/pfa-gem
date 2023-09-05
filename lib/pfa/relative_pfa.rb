@@ -64,10 +64,6 @@ class RelativePFA
     end
   end
 
-  # Définition d'autres valeurs précise (vanilla)
-  # -raccourcis-
-  def zero=(value); add(:zero, value) end
-  def end_time=(value); add(:end_time, value) end
 
   # @return \Bool true si les données relative du PFA sont valides
   # 
@@ -108,9 +104,9 @@ class RelativePFA
       developpement_part2.after?(cle_de_voute)  || raise_time_error('cle_de_voute', 'developpement_part2')
       pivot2.after?(developpement_part2)        || raise_time_error('developpement_part2', 'pivot2')
     end
-    denouement.after?(pivot2)   || raise_time_error('pivot2','denouement')
-    climax.after?(denouement)   || raise_time_error('denouement','climax')
-    end_time > climax.start_at  || raise_time_error('end_time','climax', end_time, climax)
+    denouement.after?(pivot2)         || raise_time_error('pivot2','denouement')
+    climax.after?(denouement)         || raise_time_error('denouement','climax')
+    data[:end_time].time > climax.start_at || raise_time_error('end_time','climax', end_time, climax)
   end
 
   def raise_time_error(key_before, key_after)
@@ -130,6 +126,15 @@ class RelativePFA
 
   def zero      ; data[:zero].time      unless data[:zero].nil?      end
   def end_time  ; data[:end_time].time  unless data[:end_time].nil?  end
+  def duree
+    @duree ||= PFA::NTime.new(end_time, zero.to_i)
+  end
+  alias :duration :duree
+
+  # Définitions -raccourcis-
+  def zero=(value)      ; add(:zero, value)     end
+  def end_time=(value)  ; add(:end_time, value) end
+
 
   # --- Helper Methods ---
 
@@ -143,7 +148,11 @@ class RelativePFA
   end
 
   def to_svg
-    puts "Je dois apprendre à sortir en SVG".orange
+    svg_builder.build
+  end
+
+  def svg_builder
+    @svg_builder ||= SVGBuilder.new(self)
   end
 
 end #/ class RelativePFA

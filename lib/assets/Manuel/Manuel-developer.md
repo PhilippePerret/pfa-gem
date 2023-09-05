@@ -2,6 +2,8 @@
 
 ## Difficulté des temps
 
+> Note : pour simplifier, on ne ramène plus les temps à 120 minutes comme c'était le cas avant. On ne tient compte que de la durée réelle du film.
+
 La difficulté des temps pour les nœuds tient au fait que :
 
 * Le nœud possède un temps absolu (défini par le paradigme absolu). Ce temps correspond à la position idéale du nœud dans le paradigme.
@@ -28,10 +30,10 @@ Plusieurs méthode pratiques permettent de gérer ces temps :
 Soit cdv, l'instance \PFA::RelativePFA::Node de la clé de voûte.
 
 cdv.start_at
-# => \PFA::NodeTime du temps du nœud tel qu'il a été instancié avec l'horloge du film.
+# => \PFA::NTime du temps du nœud tel qu'il a été instancié avec l'horloge du film.
 
 cdv.start_at.exact
-# => \PFA::NodeTime du temps exact du nœud, en tenant compte du zéro
+# => \PFA::NTime du temps exact du nœud, en tenant compte du zéro
 
 cdv.start_at.exact.to_horloge
 # => \String L'horloge exacte, comme si le film commençait à 0:00:00.
