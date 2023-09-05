@@ -1,10 +1,10 @@
-require_relative 'imagemagick_node_methods'
+require_relative 'imagemagick_module'
 
 module PFA
 class RelativePFA
 class Node
 
-  include ImageMagicNodesMethodes
+  include MagickPFA
 
   attr_reader :pfa, :key
 
@@ -101,15 +101,15 @@ class Node
   end
 
   def abs_top
-    @abs_top ||= AnyBuilder::ABS_TOPS[type]
+    @abs_top ||= MagickPFA::ABS_TOPS[type]
   end
 
   def abs_bottom
-    @abs_bottom ||= AnyBUILDER::ABS_BOTTOMS[type]
+    @abs_bottom ||= MagickPFA::ABS_BOTTOMS[type]
   end
 
   def abs_height
-    @abs_height ||= AnyBuilder::HEIGHTS[type]
+    @abs_height ||= MagickPFA::HEIGHTS[type]
   end
 
   def img_abs_surface
@@ -131,16 +131,16 @@ class Node
   end
 
   def top
-    @top ||= AnyBuilder::TOPS[type]
+    @top ||= MagickPFA::TOPS[type]
   end
 
   def bottom
-    @bottom ||= AnyBUILDER::BOTTOMS[type]
+    @bottom ||= MagickPFA::BOTTOMS[type]
   end
   
   # Hauteur de la boite pour écrire le texte
   def height
-    @height ||= AnyBuilder::HEIGHTS[type]
+    @height ||= MagickPFA::HEIGHTS[type]
   end
 
   def img_surface
@@ -186,7 +186,7 @@ class Node
   def abs_hcenter     ; @abshcenter   ||= abs_left + abs_demiwidth  end
   def vcenter         ; @vcenter      ||= top   + demiheight        end
   # Le bas ultime du paradigme ?
-  def box_bottom      ; @box_bottom   ||= top + 13 * ImgBuilder::LINE_HEIGHT end
+  def box_bottom      ; @box_bottom   ||= top + 13 * MagickPFA::LINE_HEIGHT end
 
 
   private

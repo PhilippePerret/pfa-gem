@@ -6,11 +6,29 @@
 #   On le met en module pour avoir toutes les méthodes séparées
 #   du module principal.
 # 
-require_relative 'any_builder'
-module ImageMagicNodesMethodes
+require_relative 'img_builder'
+module MagickPFA
+
+  # -- Commande ImageMagick --
+  
+  CONVERT_CMD = 'convert' # /usr/local/bin/convert si pas d'alias
 
   AnyBUILDER = PFA::RelativePFA::AnyBuilder
+  ImgBUILDER = PFA::RelativePFA::ImgBuilder
 
+
+  # Le début du code de la commande convert
+  def self.code_for_intro
+    <<~CMD.strip
+    #{CONVERT_CMD}
+    -size #{PFA_WIDTH}x#{PFA_HEIGHT}
+    xc:white
+    -units PixelsPerInch
+    -density 300
+    -background transparent 
+    -stroke black
+    CMD
+  end
 
   # @return [Array<BashString>] le code Image Magick pour construire 
   # le noeud courant, ligne à ligne
@@ -35,14 +53,14 @@ module ImageMagicNodesMethodes
     <<~CMD.strip
     #{send("img_lines_for_abs_#{type}".to_sym)}
     \\(
-    -stroke #{AnyBUILDER::COLORS[type]}
-    -strokewidth #{AnyBUILDER::ABS_FONTWEIGHTS[type]}
-    -pointsize #{AnyBUILDER::ABS_FONTSIZES[type]}
+    -stroke #{COLORS[type]}
+    -strokewidth #{ABS_FONTWEIGHTS[type]}
+    -pointsize #{ABS_FONTSIZES[type]}
     -size #{img_abs_surface}
     label:"#{mark}"
     -background none
     -trim
-    -gravity #{AnyBUILDER::GRAVITIES[type]}
+    -gravity #{GRAVITIES[type]}
     -extent #{img_abs_surface}
     \\)
     -gravity northwest
@@ -61,21 +79,21 @@ module ImageMagicNodesMethodes
     -strokewidth 3
     -fill black
     -background white
-    -draw "line #{left},#{top-AnyBUILDER::LINE_HEIGHT/2} #{left+1},#{bottom+4*AnyBUILDER::LINE_HEIGHT}"
+    -draw "line #{left},#{top-LINE_HEIGHT/2} #{left+1},#{bottom+4*LINE_HEIGHT}"
     \\(
     -background white
-    -stroke #{AnyBUILDER::COLORS[type]}
-    -fill #{AnyBUILDER::COLORS[type]}
-    -strokewidth #{AnyBUILDER::FONTWEIGHTS[type]}
-    -pointsize #{AnyBUILDER::FONTSIZES[type]}
+    -stroke #{COLORS[type]}
+    -fill #{COLORS[type]}
+    -strokewidth #{FONTWEIGHTS[type]}
+    -pointsize #{FONTSIZES[type]}
     label:"#{mark}"
     -size #{img_surface}
     -trim
-    -gravity #{AnyBUILDER::GRAVITIES[type]}
+    -gravity #{GRAVITIES[type]}
     -extent #{img_surface}
     \\)
     -gravity northwest
-    -geometry +#{left+2-AnyBUILDER::RECTIFS[:part]}+#{top+2}
+    -geometry +#{left+2-RECTIFS[:part]}+#{top+2}
     -composite
     #{start_at.as_img_horloge_code(self)}
     CMD
@@ -87,9 +105,9 @@ module ImageMagicNodesMethodes
     # La boite de l'acte idéal
     <<~CMD.strip
     -background transparent
-    -stroke #{AnyBUILDER::DARKERS[:part]}
+    -stroke #{DARKERS[:part]}
     -fill white
-    -strokewidth #{AnyBUILDER::ABS_BORDERS[:part]}
+    -strokewidth #{ABS_BORDERS[:part]}
     -draw "rectangle #{abs_left},#{abs_top} #{abs_right},#{abs_bottom}"
     CMD
   end
@@ -98,11 +116,87 @@ module ImageMagicNodesMethodes
     # La boite de l'acte réel
     <<~CMD.strip
     -background transparent
-    -stroke #{AnyBUILDER::DARKERS[:part]}
+    -stroke #{DARKERS[:part]}
     -fill white
-    -strokewidth #{AnyBUILDER::ABS_BORDERS[:part]}
+    -strokewidth #{ABS_BORDERS[:part]}
     -draw "rectangle #{left},#{top} #{right},#{bottom}"
     CMD
   end
+
+
+  RECTIFS = {
+    part:         50, 
+    sequence:     0, 
+    noeud:        0
+  }
+
+  #
+  # Taille de police en fonction du type de l'élément
+  # 
+  ABS_FONTSIZES = {
+    part:     10,
+    sequence: 8,
+    noeud:    7
+  }
+  FONTSIZES = {
+    part:     7, 
+    sequence: 7, 
+    noeud:    7
+  }
+
+  #
+  # Graisse de la police en fonction du type de l'élément
+  # 
+  ABS_FONTWEIGHTS = {
+    part:     3,
+    sequence: 2,
+    noeud:    1
+  }
+  FONTWEIGHTS = { 
+    part:     1,
+    sequence: 1, 
+    noeud:    1 
+  }
+
+  #
+  # Couleur en fonction du type de l'élément
+  # 
+  COLORS = {
+    part:     'gray75',
+    sequence: 'gray55',
+    noeud:    'gray55' 
+  }
+
+  #
+  # Couleur plus sombre en fonction de l'élément
+  # 
+  DARKERS = {
+    part:     'gray50',
+    sequence: 'gray45',
+    noeud:    'gray45' 
+  }
+
+  # 
+  # Gravité en fonction du type de l'élément
+  # 
+  GRAVITIES = {
+    part:     'Center',
+    sequence: 'Center',
+    noeud:    'Center'
+  }
+
+  #
+  # Largeur des bords en fonction du type de l'élément
+  # 
+  ABS_BORDERS = {
+    part:     3,
+    sequence: 2,
+    noeud:    1
+  }
+  BORDERS = {
+    part:     1,
+    sequence: 1, 
+    noeud:    1
+  }
 
 end

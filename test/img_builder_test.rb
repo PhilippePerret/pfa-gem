@@ -50,7 +50,7 @@ class ImgBuilderTests < Minitest::Test
 
   def test_building_succeeds_with_bonne_data
     define_bon_pfa
-    assert_silent { builder.build(as: :real_book) }
+    assert_silent { builder.build(**{as: :real_book}) }
   end
 
   def test_calcul_de_la_duree_du_film
@@ -86,7 +86,8 @@ class ImgBuilderTests < Minitest::Test
     cdv = pfa.cle_de_voute
     builder.init(**{as: :test})
     assert_respond_to cdv.start_at, :to_px
-    expected  = (3580 * ((ImgBUILDER::PFA_WIDTH - ImgBUILDER::PFA_LEFT_MARGIN - ImgBUILDER::PFA_RIGHT_MARGIN).to_f / (2 * 3600 - 20))).to_i
+    PFA::RelativePFA::AnyBuilder.define_dims_constants(:test)
+    expected  = (3580 * ((MagickPFA::PFA_WIDTH - MagickPFA::PFA_LEFT_MARGIN - MagickPFA::PFA_RIGHT_MARGIN).to_f / (2 * 3600 - 20))).to_i
     actual    = cdv.start_at.to_px(pfa)
     assert_equal(expected, actual, "La valeur de cdv.to_px devrait être de #{expected}. Elle vaut #{actual}…")
   end

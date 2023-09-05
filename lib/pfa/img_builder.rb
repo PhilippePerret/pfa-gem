@@ -7,12 +7,10 @@ class RelativePFA
 class ImgBuilder < AnyBuilder
 
 
-  # -- Commande ImageMagick --
-  
-  CONVERT_CMD = 'convert' # /usr/local/bin/convert si pas d'alias
-
-
   # Initialisation avant la construction
+  # 
+  # On définit notamment toutes les constants PFA_WIDTH etc.
+  # 
   def init(**params)
     params[:as].is_a?(Symbol) || params[:as].is_a?(Hash) || raise(PFAFatalError.new(101))
     RelativePFA::AnyBuilder.define_dims_constants(params[:as])
@@ -38,16 +36,16 @@ class ImgBuilder < AnyBuilder
   # 
   def build(**params)
     #
-    # Le PFA doit être défini au minimum et ses données doivent être
-    # valides.
-    # 
-    pfa.valid?
-
-    #
     # Initialisation de la construction. On doit par exemple fournir
     # les dimensions à utiliser à l'aide options[:as]
     #
     init(**params)
+
+    #
+    # Le PFA doit être défini au minimum et ses données doivent être
+    # valides.
+    # 
+    pfa.valid?
 
     #
     #
@@ -64,21 +62,13 @@ class ImgBuilder < AnyBuilder
     # cmd << "xc:white"
     # cmd << "-units PixelsPerInch -density 300"
     # cmd << "-background white -stroke black"
-    cmd = <<~CMD.strip
-    #{CONVERT_CMD}
-    -size #{PFA_WIDTH}x#{PFA_HEIGHT}
-    xc:white
-    -units PixelsPerInch
-    -density 300
-    -background transparent 
-    -stroke black
-    CMD
+    cmd = MagickPFA.code_for_intro
 
     #
     # Le fond, avec les actes
     # 
     actes.each do |acte|
-      # cmd += acte.img_draw_command
+      cmd += acte.img_draw_command
     end
 
     # 
@@ -178,7 +168,7 @@ class ImgBuilder < AnyBuilder
   # Produira la constant COEF_PIXELS
   # 
   def calc_coefficient_pixels
-    (PFA_WIDTH - PFA_LEFT_MARGIN - PFA_RIGHT_MARGIN).to_f / pfa.duration.to_i
+    (MagickPFA::PFA_WIDTH - MagickPFA::PFA_LEFT_MARGIN - MagickPFA::PFA_RIGHT_MARGIN).to_f / pfa.duration.to_i
   end
 
 

@@ -37,9 +37,12 @@ class AnyBuilder
   }
 
   def self.rem_const_if_exists(const_name)
-    if AnyBuilder.const_defined?(const_name)
+    if MagickPFA.const_defined?(const_name)
       # dbg "Je dois détruire la constante #{key.to_s.upcase}".orange
-      Object.send(:remove_const, const_name)
+      MagickPFA.send(:remove_const, const_name)
+    end
+    if MagickPFA.const_defined?(const_name)
+      MagickPFA.send(:remove_const, const_name)
     end
   end
   # Définition des dimensions
@@ -61,137 +64,64 @@ class AnyBuilder
     params.each do |key, value|
       const_name = key.to_s.upcase
       rem_const_if_exists(const_name)
-      Object.const_set(const_name, value)
+      # Object.const_set(const_name, value)
+      # self.class.const_set(const_name, value)
+      MagickPFA.const_set(const_name, value)
     end
 
     #
     # Définition de la hauteur de ligne 
     # 
     rem_const_if_exists('LINE_HEIGHT') # tests
-    Object.const_set('LINE_HEIGHT', (PFA_HEIGHT.to_f / 15).to_i)
+    MagickPFA.const_set('LINE_HEIGHT', (MagickPFA::PFA_HEIGHT.to_f / 15).to_i)
 
     #
     # Différence en hauteur du paradigme réel par rapport au paradigme
     # idéal
     # 
     rem_const_if_exists('VOFFSET_REL_PFA') # tests
-    Object.const_set('VOFFSET_REL_PFA', 9 * LINE_HEIGHT)
+    MagickPFA.const_set('VOFFSET_REL_PFA', 9 * MagickPFA::LINE_HEIGHT)
 
     #
     # Position verticale des éléments en fonction de leur nature
     # 
     rem_const_if_exists('ABS_TOPS') # tests
-    Object.const_set('ABS_TOPS', {
-        part:         1 * LINE_HEIGHT,      
-        sequence:     3 * LINE_HEIGHT,       
-        noeud:        3 * LINE_HEIGHT,
-        top_horloge:  LINE_HEIGHT - 10
+    MagickPFA.const_set('ABS_TOPS', {
+        part:         1 * MagickPFA::LINE_HEIGHT,      
+        sequence:     3 * MagickPFA::LINE_HEIGHT,       
+        noeud:        3 * MagickPFA::LINE_HEIGHT,
+        top_horloge:  MagickPFA::LINE_HEIGHT - 10
     })
     rem_const_if_exists('ABS_BOTTOMS') # tests
-    Object.const_set('ABS_BOTTOMS', {
-      part:         ABS_TOPS[:part]     + 6 * LINE_HEIGHT,
-      sequence:     ABS_TOPS[:sequence] + 6 * LINE_HEIGHT,
-      noeud:        ABS_TOPS[:noeud]    + 6 * LINE_HEIGHT,
+    MagickPFA.const_set('ABS_BOTTOMS', {
+      part:         MagickPFA::ABS_TOPS[:part]     + 6 * MagickPFA::LINE_HEIGHT,
+      sequence:     MagickPFA::ABS_TOPS[:sequence] + 6 * MagickPFA::LINE_HEIGHT,
+      noeud:        MagickPFA::ABS_TOPS[:noeud]    + 6 * MagickPFA::LINE_HEIGHT,
     })
     rem_const_if_exists('TOPS') # tests
-    Object.const_set('TOPS', {
-      part:         ABS_BOTTOMS[:part],
-      sequence:     ABS_TOPS[:sequence]     + VOFFSET_REL_PFA,  
-      noeud:        ABS_TOPS[:noeud]        + VOFFSET_REL_PFA,
-      top_horloge:  ABS_TOPS[:top_horloge]  + VOFFSET_REL_PFA,
+    MagickPFA.const_set('TOPS', {
+      part:         MagickPFA::ABS_BOTTOMS[:part],
+      sequence:     MagickPFA::ABS_TOPS[:sequence]     + MagickPFA::VOFFSET_REL_PFA,  
+      noeud:        MagickPFA::ABS_TOPS[:noeud]        + MagickPFA::VOFFSET_REL_PFA,
+      top_horloge:  MagickPFA::ABS_TOPS[:top_horloge]  + MagickPFA::VOFFSET_REL_PFA,
     })
     rem_const_if_exists('BOTTOMS') # tests
-    Object.const_set('BOTTOMS', {
-      part:       ABS_BOTTOMS[:part] + VOFFSET_REL_PFA,
-      sequence:   ABS_BOTTOMS[:sequence] + VOFFSET_REL_PFA,
-      noeud:      ABS_BOTTOMS[:noeud] + VOFFSET_REL_PFA,
+    MagickPFA.const_set('BOTTOMS', {
+      part:       MagickPFA::ABS_BOTTOMS[:part]      + MagickPFA::VOFFSET_REL_PFA,
+      sequence:   MagickPFA::ABS_BOTTOMS[:sequence]  + MagickPFA::VOFFSET_REL_PFA,
+      noeud:      MagickPFA::ABS_BOTTOMS[:noeud]     + MagickPFA::VOFFSET_REL_PFA,
     })
     #
     # Hauteur en fonction du type des éléments 
     # 
     rem_const_if_exists('HEIGHTS') # tests
-    Object.const_set('HEIGHTS', { 
-      part:     PFA_HEIGHT / 1.4,
+    MagickPFA.const_set('HEIGHTS', { 
+      part:     MagickPFA::PFA_HEIGHT / 1.4,
       sequence: 50, # PFA::LINE_HEIGHT (dans fichier relatif)
       noeud:    50  # idem
     })
 
   end # define_dims_constants
-
-  RECTIFS = {
-    part:         50, 
-    sequence:     0, 
-    noeud:        0
-  }
-
-  #
-  # Taille de police en fonction du type de l'élément
-  # 
-  ABS_FONTSIZES = {
-    part:     10,
-    sequence: 8,
-    noeud:    7
-  }
-  FONTSIZES = {
-    part:     7, 
-    sequence: 7, 
-    noeud:    7
-  }
-
-  #
-  # Graisse de la police en fonction du type de l'élément
-  # 
-  ABS_FONTWEIGHTS = {
-    part:     3,
-    sequence: 2,
-    noeud:    1
-  }
-  FONTWEIGHTS = { 
-    part:     1,
-    sequence: 1, 
-    noeud:    1 
-  }
-
-  #
-  # Couleur en fonction du type de l'élément
-  # 
-  COLORS = {
-    part:     'gray75',
-    sequence: 'gray55',
-    noeud:    'gray55' 
-  }
-
-  #
-  # Couleur plus sombre en fonction de l'élément
-  # 
-  DARKERS = {
-    part:     'gray50',
-    sequence: 'gray45',
-    noeud:    'gray45' 
-  }
-
-  # 
-  # Gravité en fonction du type de l'élément
-  # 
-  GRAVITIES = {
-    part:     'Center',
-    sequence: 'Center',
-    noeud:    'Center'
-  }
-
-  #
-  # Largeur des bords en fonction du type de l'élément
-  # 
-  ABS_BORDERS = {
-    part:     3,
-    sequence: 2,
-    noeud:    1
-  }
-  BORDERS = {
-    part:     1,
-    sequence: 1, 
-    noeud:    1
-  }
 
   #
   # Les nœuds minimums pour pouvoir construire un PFA

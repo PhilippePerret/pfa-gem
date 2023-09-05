@@ -65,7 +65,7 @@ class NTime
   def as_img_horloge_code(node, **options)
     <<~CMD.strip
     \\(
-    -background #{options[:bg_color]||'white'}
+    -background #{options[:bg_color]||'transparent'}
     -stroke #{options[:color]||'gray20'}
     -fill #{options[:color]||'gray20'}
     -strokewidth 1
@@ -82,7 +82,7 @@ class NTime
   end
 
   def surface
-    @surface ||= "#{PFA::RelativePFA::AnyBuilder::PFA_WIDTH/35}x50"
+    @surface ||= "#{MagickPFA::PFA_WIDTH/35}x50"
   end
 
   # --- Operation Methods ---
