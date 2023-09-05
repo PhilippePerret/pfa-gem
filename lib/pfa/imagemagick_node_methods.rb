@@ -87,7 +87,7 @@ module ImageMagicNodesMethodes
     -stroke #{AnyBUILDER::DARKERS[:part]}
     -fill white
     -strokewidth #{AnyBUILDER::ABS_BORDERS[:part]}
-    -draw "rectangle #{abs_left},#{abs_top} #{abs_right},#{abs_bottom}"
+    -draw "rectangle #{abs_left},#{abs_top} #{abs_right},#{abs_top + 4 * AnyBUILDER::LINE_HEIGHT}"
     CMD
   end
 
