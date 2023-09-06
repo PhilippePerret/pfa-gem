@@ -86,7 +86,7 @@ class ImgBuilderTests < Minitest::Test
     cdv = pfa.cle_de_voute
     builder.init(**{as: :test})
     assert_respond_to cdv.start_at, :to_px
-    PFA::RelativePFA::AnyBuilder.define_dims_constants(:test)
+    MagickPFA.define_dims_constants(:test)
     expected  = (3580 * ((MagickPFA::PFA_WIDTH - MagickPFA::PFA_LEFT_MARGIN - MagickPFA::PFA_RIGHT_MARGIN).to_f / (2 * 3600 - 20))).to_i
     actual    = cdv.start_at.to_px(pfa)
     assert_equal(expected, actual, "La valeur de cdv.to_px devrait être de #{expected}. Elle vaut #{actual}…")

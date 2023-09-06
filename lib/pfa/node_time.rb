@@ -116,7 +116,12 @@ class NTime
   # 
   def +(secs)
     secs = secs.to_i if secs.is_a?(PFA::NTime)
-    return PFA::NTime.new(secs + @secondes, 0)
+    return PFA::NTime.new(secs + @secondes)
+  end
+
+  def -(secs)
+    secs = secs.to_i if secs.is_a?(PFA::NTime)
+    return PFA::NTime.new(@secondes - secs)
   end
 
   def <(nodetime)

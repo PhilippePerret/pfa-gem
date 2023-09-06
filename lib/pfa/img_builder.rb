@@ -1,10 +1,13 @@
 #
 # Module de construction de l'image CVG
 # 
+require_relative 'imagemagick_module'
 require_relative 'any_builder'
 module PFA
 class RelativePFA
 class ImgBuilder < AnyBuilder
+
+  attr_reader :code_image_magick
 
 
   # Initialisation avant la construction
@@ -13,7 +16,7 @@ class ImgBuilder < AnyBuilder
   # 
   def init(**params)
     params[:as].is_a?(Symbol) || params[:as].is_a?(Hash) || raise(PFAFatalError.new(101))
-    RelativePFA::AnyBuilder.define_dims_constants(params[:as])
+    MagickPFA.define_dims_constants(params[:as])
   end
 
   def coef_pixels
@@ -55,20 +58,23 @@ class ImgBuilder < AnyBuilder
 
     # 
     # Construction du code pour Image Magick
-    # (dans cmd)
+    # (tous les codes seront injectés dans @code_image_magick)
     # 
-    # cmd = []
-    # cmd << "#{CONVERT_CMD} -size #{PFA_WIDTH}x#{PFA_HEIGHT}"
-    # cmd << "xc:white"
-    # cmd << "-units PixelsPerInch -density 300"
-    # cmd << "-background white -stroke black"
-    cmd = MagickPFA.code_for_intro
+    @code_image_magick = MagickPFA.code_for_intro
+
+    #
+    # Les titres des deux PFA
+    # 
+    @code_image_magick << pfa.exposition.titre_abs_pfa + "\n"
+    @code_image_magick << pfa.exposition.titre_real_pfa + "\n"
 
     #
     # Le fond, avec les actes
     # 
     actes.each do |acte|
-      cmd += acte.img_draw_command
+      # acte.full_code_image_magick
+      @code_image_magick << acte.abs_act_box_code + "\n"
+      @code_image_magick << acte.act_box_code + "\n"
     end
 
     # 
@@ -101,13 +107,13 @@ class ImgBuilder < AnyBuilder
     #
     # L'espace de couleur
     # 
-    cmd << "\n-set colorspace sRGB"
+    # @code_image_magick << "\n-set colorspace sRGB"
 
     #
     # Chemin d'accès au fichier final
     # (en le protégeant)
     # 
-    cmd << " \"#{image_path.gsub(/ /, "\\ ")}\""
+    @code_image_magick << " \"#{image_path.gsub(/ /, "\\ ")}\""
 
     # STDOUT.write "\n\ncmd à la fin =\n++++\n#{cmd}\n+++++\n".orange
 
@@ -115,7 +121,7 @@ class ImgBuilder < AnyBuilder
     # Mise de la commande sur une seule ligne
     # (je ne parviens pas à mettre la commande sur plusieurs lignes,
     #  même avec la contre-balance…)
-    cmd_finale = cmd.split("\n").compact.join(" ")
+    cmd_finale = @code_image_magick.split("\n").compact.join(" ")
     
     
     # Pour débugger facilement, on met les numéros des lignes

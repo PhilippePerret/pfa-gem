@@ -11,12 +11,14 @@ class Node
   attr_reader :description
 
   def initialize(pfa, key, value = nil)
-    # puts "\nInstanciation d'un noeud avec #{key.inspect} / #{value.inspect}".orange
     @pfa        = pfa
     @key        = key
     parse_raw_value(value)
   end
 
+  def code_image_magick
+    pfa.img_builder.code_image_magick
+  end
 
   # --- MÉTHODES TEMPORELLES ---
 
@@ -35,9 +37,23 @@ class Node
 
   # \PFA::NTime Durée 
   # Soit elle a été explicitement définie en renseignant le noeud, 
-  # soit on lui donne la valeur de la durée absolue
+  # soit on lui donne la valeur de la durée absolue.
+  # Sauf pour les actes, qui possèdent leur propre calcul, étant
+  # donné qu'ils dépendent d'autres éléments
   def duration
-    @duration ||= abs_duration
+    @duration ||= begin
+      if type == :part
+        case key
+        when :exposition          then @end_at = pfa.developpement_part1.start_at
+        when :developpement_part1 then @end_at = pfa.developpement_part2.start_at
+        when :developpement_part2 then @end_at = pfa.denouement.start_at
+        when :denouement          then @end_at = PFA::NTime.new(pfa.duration.to_i)
+        end
+        end_at - start_at 
+      else
+        abs_duration
+      end
+    end
   end
 
   # [String] Horloge du temps (relatif) de départ
@@ -120,7 +136,7 @@ class Node
   
   # Hauteur de la boite pour écrire le texte
   def height
-    @height ||= MagickPFA::HEIGHTS[type]
+    @height ||= (MagickPFA::HEIGHTS[type]).to_i
   end
 
   def img_surface
