@@ -94,7 +94,7 @@ class NTime
     -strokewidth 1
     -pointsize #{MagickPFA::BASE_FONTSIZE * MagickPFA::HORLOGE_FONT_SIZES[node.type]}
     -size #{surface}
-    -gravity northwest
+    -gravity #{options[:gravity]||'Center'}
     label:"#{for_real ? self.as_horloge_with_offset(options[:abs_time]) : as_horloge}"
     -extent #{surface}
     \\)

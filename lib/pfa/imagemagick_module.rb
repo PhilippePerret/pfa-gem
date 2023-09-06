@@ -66,7 +66,7 @@ module MagickPFA
     -gravity northwest
     -geometry +#{abs_left}-100
     -composite
-    #{abs_start.as_img_horloge_code(self, **{pfa_type: :ideal})}
+    #{abs_start.as_img_horloge_code(self, **{pfa_type: :ideal, gravity:'northwest'}})}
     CMD
   end
   # -geometry +#{abs_left}+#{abs_top}
@@ -96,7 +96,7 @@ module MagickPFA
     -gravity northwest
     -geometry +#{left+2-RECTIFS[:part]}+#{top+2}
     -composite
-    #{start_at.as_img_horloge_code(self, **{pfa_type: :real, abs_time: abs_start})}
+    #{start_at.as_img_horloge_code(self, **{pfa_type: :real, abs_time: abs_start, gravity:'northwest'})}
     CMD
   end
 
@@ -116,7 +116,7 @@ module MagickPFA
   def img_lines_for_real_part
     # La boite de l'acte réel
     <<~CMD.strip
-    -background transparent
+    -background red
     -stroke #{DARKERS[:part]}
     -fill white
     -strokewidth #{ABS_BORDERS[:part]}
