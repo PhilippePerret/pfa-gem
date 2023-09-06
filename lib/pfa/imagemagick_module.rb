@@ -97,6 +97,9 @@ module MagickPFA
     rem_const_if_exists('LINE_HEIGHT') # tests
     MagickPFA.const_set('LINE_HEIGHT', (MagickPFA::PFA_HEIGHT.to_f / 15).to_i)
 
+    rem_const_if_exists('QUART_LINE_HEIGHT') # tests
+    MagickPFA.const_set('QUART_LINE_HEIGHT', LINE_HEIGHT / 4)
+
     #
     # Différence en hauteur du paradigme réel par rapport au paradigme
     # idéal
@@ -163,7 +166,7 @@ module MagickPFA
 
   # Le début du code de la commande convert
   def self.code_for_intro
-    <<~CMD.strip + "\n"
+    <<~CMD.strip
     #{CONVERT_CMD} -size #{PFA_WIDTH}x#{PFA_HEIGHT} xc:white 
     -units PixelsPerInch
     -density 300
@@ -177,7 +180,7 @@ module MagickPFA
   CODE_TITRE_PARADIGME = <<~CMD.strip.freeze
     -pointsize 25
     -draw "text %{lf},%{tp} '%{titre}'"
-  CMD
+    CMD
 
   CODE_BOITE_ACTE = <<~CMD.strip.freeze
     -stroke black
@@ -185,29 +188,55 @@ module MagickPFA
     -background transparent
     -fill transparent
     -draw "rectangle %{lf},%{tp} %{rg},%{bt}"
-  CMD
+    CMD
 
+  CODE_PART_NAME = <<~CMD.strip.freeze
+    \\( -extent %{w}x%{h} -stroke black -strokewidth 1 -background transparent -pointsize %{fs} -gravity Center label:"%{n}" \\) -geometry +%{gh}+%{gv} -gravity NorthWest -composite
+  CMD
+  # {
+  #   w: width, h: font_height + 20, n: mark, fs: font_size, 
+  #   gh: left,               # pour la géométrie, décalage par rapport au Nord-Ouest
+  #   gv: top + LINE_HEIGHT,  # pour la géométrie, décalage vertical
+  # }
+
+  
+  # [BashCode] Code ImageMagick pour le titre des paradigmes
+  def titre_abs_pfa
+    CODE_TITRE_PARADIGME % {lf: 20, tp: abs_top + LINE_HEIGHT - 20, titre: "PARADIGME IDÉAL DU FILM"}
+  end
+  def titre_real_pfa
+    CODE_TITRE_PARADIGME % {lf: 20, tp: top + LINE_HEIGHT - 20, titre: "PARADIGME RÉEL DU FILM"}
+  end
 
   # [BashString] Code pour dessiner le noeud, quand c'est un acte,
   # dans l'image.
   def abs_act_box_code
-    # @note : Le + LINE_HEIGHT servira à écrire le titre "PARADIGME RÉEL/IDÉAL DU FILM"
+    # @note : Le + LINE_HEIGHT sert à laisser la place pour écrire 
+    # le titre "PARADIGME RÉEL/IDÉAL DU FILM"
     CODE_BOITE_ACTE % {
       lf: abs_left, tp: abs_top + LINE_HEIGHT, rg: abs_right, bt: abs_bottom
     }
   end
-  def titre_abs_pfa
-    CODE_TITRE_PARADIGME % {lf: 20, tp: abs_top + LINE_HEIGHT - 20, titre: "PARADIGME IDÉAL DU FILM"}
-  end
-
-  def titre_real_pfa
-    CODE_TITRE_PARADIGME % {lf: 20, tp: top + LINE_HEIGHT - 20, titre: "PARADIGME (RÉEL) DU FILM"}
-  end
-  # [BashString] Code pour dessiner le noeud, quand c'est un acte,
-  # dans l'image.
   def act_box_code
     # @note : Le + LINE_HEIGHT servira à écrire le titre "PARADIGME RÉEL/IDÉAL DU FILM"
     CODE_BOITE_ACTE % {lf: left, tp: top + LINE_HEIGHT, rg: right, bt: bottom}
+  end
+
+  # [BashString] Code pour dessiner les noms des parties (actes)
+  # 
+  def abs_act_name_code
+    CODE_PART_NAME % {
+      w: abs_width, h: abs_font_size + 100, n: mark, fs: abs_font_size, 
+      gh: abs_left,               # pour la géométrie, décalage par rapport au Nord-Ouest
+      gv: abs_top + LINE_HEIGHT + QUART_LINE_HEIGHT,  # pour la géométrie, décalage vertical
+    }
+  end
+  def act_name_code
+    CODE_PART_NAME % {
+      w: width, h: font_size + 100, n: mark, fs: font_size, 
+      gh: left,               # pour la géométrie, décalage par rapport au Nord-Ouest
+      gv: top + LINE_HEIGHT + QUART_LINE_HEIGHT,  # pour la géométrie, décalage vertical
+    }
   end
 
   # @return [Array<BashString>] le code Image Magick pour construire 

@@ -60,21 +60,25 @@ class ImgBuilder < AnyBuilder
     # Construction du code pour Image Magick
     # (tous les codes seront injectés dans @code_image_magick)
     # 
-    @code_image_magick = MagickPFA.code_for_intro
+    @code_image_magick = [MagickPFA.code_for_intro]
 
     #
     # Les titres des deux PFA
     # 
-    @code_image_magick << pfa.exposition.titre_abs_pfa + "\n"
-    @code_image_magick << pfa.exposition.titre_real_pfa + "\n"
+    @code_image_magick << pfa.exposition.titre_abs_pfa
+    @code_image_magick << pfa.exposition.titre_real_pfa
 
     #
     # Le fond, avec les actes
     # 
     actes.each do |acte|
       # acte.full_code_image_magick
-      @code_image_magick << acte.abs_act_box_code + "\n"
-      @code_image_magick << acte.act_box_code + "\n"
+      # -- Cadre de la partie (acte) --
+      @code_image_magick << acte.abs_act_box_code
+      @code_image_magick << acte.act_box_code
+      # --- Nomde l'acte --
+      @code_image_magick  << acte.abs_act_name_code
+      @code_image_magick  << acte.act_name_code
     end
 
     # 
@@ -105,15 +109,16 @@ class ImgBuilder < AnyBuilder
     # cmd << "-composite"
 
     #
-    # L'espace de couleur
-    # 
-    # @code_image_magick << "\n-set colorspace sRGB"
-
-    #
     # Chemin d'accès au fichier final
     # (en le protégeant)
     # 
-    @code_image_magick << " \"#{image_path.gsub(/ /, "\\ ")}\""
+    @code_image_magick << "\"#{image_path.gsub(/ /, "\\ ")}\""
+
+    # 
+    # On transforme le code ImageMagick en ajoutant des retours
+    # de chariot entre chaque section de code
+    # 
+    @code_image_magick = @code_image_magick.join("\n")
 
     # STDOUT.write "\n\ncmd à la fin =\n++++\n#{cmd}\n+++++\n".orange
 
