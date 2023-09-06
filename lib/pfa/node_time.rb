@@ -21,7 +21,7 @@ class NTime
   # 
   # @param \Integer zero_offset   Décalage du temps avec zéro
   # 
-  def initialize(foo, zero_offset)
+  def initialize(foo, zero_offset = 0)
     @zero_offset = zero_offset
     case foo
     when Integer    then @secondes = foo
@@ -35,8 +35,30 @@ class NTime
   end
 
 
-  def to_horloge
-    @horloge ||= PFA.s2h(secondes)
+  def as_horloge
+    @to_horloge ||= PFA.s2h(secondes)
+  end
+  alias :to_horloge :as_horloge
+
+  def as_duree
+    @as_duree ||= PFA.s2h(secondes, **{as: :duree})
+  end
+
+  # @return [String] Une horloge qui indique le décalage avec 
+  # la valeur idéale (seulement pour les noeuds relatifs).
+  # 
+  # @param abs_time [PFA::NTime] Le temps absolu
+  # 
+  def as_horloge_with_offset(abs_time)
+    @as_horloge_with_offset ||= begin
+      if self.to_i == abs_time.to_i
+        self.as_horloge
+      else
+        signe   = self > abs_time ? '+' : '-'
+        offset  = self.class.new((abs_time.to_i - self.to_i).abs)
+        "#{self.as_horloge} (#{signe}#{offset.as_duree})" 
+      end
+    end
   end
 
   def to_i
@@ -63,26 +85,27 @@ class NTime
   #     Plus tard, pourra redéfinir :bg_color et :color
   # 
   def as_img_horloge_code(node, **options)
+    for_real = options[:pfa_type] == :real
     <<~CMD.strip
     \\(
     -background #{options[:bg_color]||'transparent'}
     -stroke #{options[:color]||'gray20'}
     -fill #{options[:color]||'gray20'}
     -strokewidth 1
-    -pointsize 6.5
+    -pointsize #{MagickPFA::BASE_FONTSIZE * MagickPFA::HORLOGE_FONT_SIZES[node.type]}
     -size #{surface}
-    -gravity Center
-    label:"#{to_horloge}"
+    -gravity northwest
+    label:"#{for_real ? self.as_horloge_with_offset(options[:abs_time]) : as_horloge}"
     -extent #{surface}
     \\)
     -gravity northwest
-    -geometry +#{node.left}+#{node.top}
+    -geometry +#{node.send(for_real ? :left : :abs_left) + 24}+#{node.send(for_real ? :top : :abs_top) + 8}
     -composite
     CMD
   end
 
   def surface
-    @surface ||= "#{MagickPFA::PFA_WIDTH/35}x50"
+    @surface ||= "#{MagickPFA::PFA_WIDTH/10}x50"
   end
 
   # --- Operation Methods ---

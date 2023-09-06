@@ -44,7 +44,7 @@ module MagickPFA
   #   erreurs éventuelles.
   # 
   def img_draw_command(**options)
-    "\n" + img_draw_command_abs_pfa + "\n" + img_draw_command_rel_pfa
+    "\n" + img_draw_command_abs_pfa + "\n" + img_draw_command_real_pfa
   end
 
   # @return [Array<BashString>] Les lignes pour construire le noeud,
@@ -55,7 +55,7 @@ module MagickPFA
     \\(
     -stroke #{COLORS[type]}
     -strokewidth #{ABS_FONTWEIGHTS[type]}
-    -pointsize #{ABS_FONTSIZES[type]}
+    -pointsize #{abs_font_size}
     -size #{img_abs_surface}
     label:"#{mark}"
     -background none
@@ -66,15 +66,16 @@ module MagickPFA
     -gravity northwest
     -geometry +#{abs_left}-100
     -composite
+    #{abs_start.as_img_horloge_code(self, **{pfa_type: :ideal})}
     CMD
   end
   # -geometry +#{abs_left}+#{abs_top}
 
   # @return [Array<BashString>] Les lignes pour construire le noeud,
   # en version relative (i.e. PFA du film)
-  def img_draw_command_rel_pfa
+  def img_draw_command_real_pfa
     <<~CMD.strip
-    #{send("img_lines_for_rel_#{type}".to_sym)}
+    #{send("img_lines_for_real_#{type}".to_sym)}
     -stroke black
     -strokewidth 3
     -fill black
@@ -85,7 +86,7 @@ module MagickPFA
     -stroke #{COLORS[type]}
     -fill #{COLORS[type]}
     -strokewidth #{FONTWEIGHTS[type]}
-    -pointsize #{FONTSIZES[type]}
+    -pointsize #{font_size}
     label:"#{mark}"
     -size #{img_surface}
     -trim
@@ -95,7 +96,7 @@ module MagickPFA
     -gravity northwest
     -geometry +#{left+2-RECTIFS[:part]}+#{top+2}
     -composite
-    #{start_at.as_img_horloge_code(self)}
+    #{start_at.as_img_horloge_code(self, **{pfa_type: :real, abs_time: abs_start})}
     CMD
   end
 
@@ -112,7 +113,7 @@ module MagickPFA
     CMD
   end
 
-  def img_lines_for_rel_part
+  def img_lines_for_real_part
     # La boite de l'acte réel
     <<~CMD.strip
     -background transparent
@@ -124,6 +125,29 @@ module MagickPFA
   end
 
 
+
+  # La marque pour une séquence (un crochet allongé)
+  def img_lines_for_real_sequence
+    <<~CMD
+    -strokewidth #{AnyBuilder::BORDERS[:seq]}
+    -stroke #{AnyBuilder::COLORS[:seq]}
+    -fill white
+    -draw "polyline #{left+4},#{top+demiheight} #{left+4},#{bottom} #{right-4},#{bottom} #{right-4},#{top+demiheight}"
+    #{mark_horloge}
+    CMD
+  end
+
+  # La marque pour un nœud (un rond/point)
+  def img_lines_for_real_noeud
+    <<~CMD
+    -strokewidth #{AnyBuilder::BORDERS[:noeud]}
+    -stroke #{AnyBuilder::COLORS[:noeud]}
+    -fill white
+    -draw "roundrectangle #{left},#{top} #{right},#{bottom} 10,10"
+    #{mark_horloge}
+    CMD
+  end
+
   RECTIFS = {
     part:         50, 
     sequence:     0, 
@@ -132,16 +156,23 @@ module MagickPFA
 
   #
   # Taille de police en fonction du type de l'élément
+  # (c'est un type proportionnel en fonction de la taille fournie
+  #  cela permet d'ajuster les choses)
   # 
   ABS_FONTSIZES = {
-    part:     10,
-    sequence: 8,
-    noeud:    7
+    part:     2.4,
+    sequence: 1.5,
+    noeud:    1
   }
   FONTSIZES = {
-    part:     7, 
-    sequence: 7, 
-    noeud:    7
+    part:     1.5,
+    sequence: 1.5,
+    noeud:    1
+  }
+  HORLOGE_FONT_SIZES = {
+    part:     0.81,
+    sequence: 0.81,
+    noeud:    0.81,
   }
 
   #

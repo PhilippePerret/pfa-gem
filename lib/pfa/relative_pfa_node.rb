@@ -18,30 +18,6 @@ class Node
   end
 
 
-
-
-  # La marque pour une séquence (un crochet allongé)
-  def img_lines_for_sequence
-    <<~CMD
-    -strokewidth #{AnyBuilder::BORDERS[:seq]}
-    -stroke #{AnyBuilder::COLORS[:seq]}
-    -fill white
-    -draw "polyline #{left+4},#{top+demiheight} #{left+4},#{bottom} #{right-4},#{bottom} #{right-4},#{top+demiheight}"
-    #{mark_horloge}
-    CMD
-  end
-
-  # La marque pour un nœud (un rond/point)
-  def img_lines_for_noeud
-    <<~CMD
-    -strokewidth #{AnyBuilder::BORDERS[:noeud]}
-    -stroke #{AnyBuilder::COLORS[:noeud]}
-    -fill white
-    -draw "roundrectangle #{left},#{top} #{right},#{bottom} 10,10"
-    #{mark_horloge}
-    CMD
-  end
-
   # --- MÉTHODES TEMPORELLES ---
 
   # -- Temps relatifs --
@@ -116,6 +92,10 @@ class Node
     @img_abs_surface ||= "#{abs_width}x#{abs_height}"
   end
 
+  def abs_font_size
+    @abs_font_size ||= MagickPFA::BASE_FONTSIZE * MagickPFA::ABS_FONTSIZES[type]
+  end
+
   # -- Dimensions Relatives --
 
   def left
@@ -145,6 +125,10 @@ class Node
 
   def img_surface
     @img_surface ||= "#{width}x#{height}"
+  end
+
+  def font_size
+    @font_size ||= MagickPFA::BASE_FONTSIZE * MagickPFA::FONTSIZES[type]
   end
 
 

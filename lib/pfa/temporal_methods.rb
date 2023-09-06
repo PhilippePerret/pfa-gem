@@ -33,13 +33,29 @@ module PFA
 
   # Reçoit un nombre de secondes \Integer et retourne une horloge
   # au format 'H:MM:SS'
-  def self.s2h(secondes)
+  # Si +options[:as]+ = :duree, on renvoie une version durée, 
+  # c'est-à-dire avec les heures, et les minutes sur deux chiffres
+  # seulement s'il y a des heures.
+  def self.s2h(secondes, **options)
     secondes.is_a?(Integer) || raise(PFAFatalError.new(51), **{value: "#{secondes.inspect}::#{secondes.class}"})
     h = secondes / 3600
     r = secondes % 3600
     m = r / 60
     s = r % 60
-    "#{h}:" + [m,s].collect{|n|n.to_s.rjust(2,'0')}.join(':')
+    if options[:as] == :duree
+      # -- Version durée --
+      # (on ne met les heures que si elles sont définies)
+      segs = []
+      segs << "#{h}" if h > 0
+      m = m.to_s.rjust(2,'0') if h > 0
+      segs << "#{m}"
+      segs << s.to_s.rjust(2,'0')
+      segs.join(':') # => "1:02:54" ou "2:45"
+    else
+      # -- Version horloge normale --
+      # (toujours avec les heures)
+      "#{h}:" + [m,s].collect{|n|n.to_s.rjust(2,'0')}.join(':')
+    end
   end
 
   # Reçoit un temps \Time et retourne une horloge 'H:MM:SS' 

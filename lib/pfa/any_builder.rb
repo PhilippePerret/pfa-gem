@@ -29,10 +29,16 @@ class AnyBuilder
   #
   DIMS_CONSTANTS_PER_THING = {
     real_book: {
-      pfa_width: 5976, pfa_height: 3882, pfa_left_margin: 0, pfa_right_margin:0
+      pfa_width: 5976, pfa_height: 3882, pfa_left_margin: 0, pfa_right_margin:0,
+      font_size: 15
     },
     test: {
-      pfa_width: 4000, pfa_height: 2598, pfa_left_margin: 20, pfa_right_margin:20
+      pfa_width: 4000, pfa_height: 2598, pfa_left_margin: 20, pfa_right_margin:20,
+      font_size: 15
+    },
+    default: {
+      pfa_width: 4000, pfa_height: 2598, pfa_left_margin: 20, pfa_right_margin:20,
+      font_size: 15
     },
   }
 
@@ -57,7 +63,16 @@ class AnyBuilder
     params = nil
     case key_thing
     when Symbol then params = DIMS_CONSTANTS_PER_THING[key_thing]
-    when Hash   then params = key_thing
+    when Hash
+      #
+      # Table fournie
+      # (dans ce cas, il faut vérifier les valeurs et mettre les
+      #  valeurs par défaut des valeurs manquantes)
+      # 
+      params = key_thing
+      DIMS_CONSTANTS_PER_THING[:default].each do |key, value|
+        params.key?(key) || params.merge!(key => value)
+      end
     else raise PFAFatalError.new(101)
     end
 
@@ -120,6 +135,17 @@ class AnyBuilder
       sequence: 50, # PFA::LINE_HEIGHT (dans fichier relatif)
       noeud:    50  # idem
     })
+
+    #
+    # Taille de fonte de base. Elle correspond à la grosseur
+    # des séquences
+    # 
+    # @todo
+    #   Plus tard, on pourra modifier aussi les proportions de
+    #   chaque taille de partie
+    # 
+    rem_const_if_exists('BASE_FONTSIZE') # tests
+    MagickPFA.const_set('BASE_FONTSIZE', params[:font_size])
 
   end # define_dims_constants
 
