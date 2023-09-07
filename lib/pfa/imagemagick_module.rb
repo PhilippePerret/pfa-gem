@@ -162,6 +162,19 @@ module MagickPFA
       noeud:    1.0 * BASE_FONTSIZE,
     })
 
+    rem_const_if_exists('Label_Width') # tests
+    MagickPFA.const_set('Label_Width', {
+      part:     400,
+      sequence: 400,
+      noeud:    400,
+    })
+    rem_const_if_exists('Label_Height') # tests
+    MagickPFA.const_set('Label_Height', {
+      part:     200,
+      sequence: 200,
+      noeud:    200,
+    })
+
     # Taille de fonte des horloges par partie
     rem_const_if_exists('FontSize_Horloges') # tests
     MagickPFA.const_set('FontSize_Horloges', {
@@ -233,8 +246,8 @@ module MagickPFA
   # Code ImageMagick de l'horloge pour les parties
   # 
   CODE_HORLOGE = <<~CMD.strip.freeze
-    \\( -extent %{w}x%{h} -background white -stroke gray20 -strokewidth 1 
-    -pointsize %{fs} -font Georgia -fill gray20 -gravity Center label:"%{mk}" \\) 
+    \\( -extent %{w}x%{h} -background %{bg} -stroke %{fg} -strokewidth 1 
+    -pointsize %{fs} -font Georgia -fill %{fg} -gravity Center label:"%{mk}" \\) 
     -geometry +%{l}+%{t} -gravity NorthWest -composite
     CMD
   
@@ -242,10 +255,10 @@ module MagickPFA
   CODE_HORLOGE_FIN = <<~CMD.strip.freeze
     -pointsize %{fs}
     -font Georgia
-    -stroke gray20
+    -stroke white
+    -background gray20
     -strokewidth 1
     -fill gray20
-    -background transparent
     -gravity NorthEast
     -draw "text 30,%{t} '%{mk}'"
     CMD
@@ -260,7 +273,7 @@ module MagickPFA
   # @return [BashString] Le code Image Magick de l'horloge pour tous
   # les éléments
   # 
-  def horloge_code(real_pfa)
+  def horloge_code(real_pfa, current_left)
     start_ntime = real_pfa ? start_at : abs_start
     #
     # Si c'est le noeud réel, il faut calculer son décalage avec le
@@ -276,6 +289,12 @@ module MagickPFA
     else
       (real_pfa ? left : abs_left) - Horloge_Width[type] / 2
     end
+
+    # Problème d'overlay
+    if current_left && theleft < current_left
+      theleft = current_left + 10
+    end
+
     #
     # Le top dépend de la nature de l'élément
     # 
@@ -284,6 +303,9 @@ module MagickPFA
     else
       (real_pfa ? top : abs_top) + 50
     end
+
+    background = part? ? 'black' : 'gray20'
+    foreground = part? ? 'gray20' : 'black'
 
     #
     # Les données template en fonction du pfa absolu ou réel
@@ -294,6 +316,8 @@ module MagickPFA
       l:    theleft,  # left de l'horloge
       t:    thetop,  # top de l'horloge (et du décalage)
       fs:   FontSize_Horloges[type], # Font size
+      bg:   background,
+      fg:   foreground,
       mk:   start_ntime.to_horloge, # Horloge
     }
     #
@@ -373,7 +397,10 @@ module MagickPFA
   #         Pour savoir si on doit retourner le code pour le pfa
   #         réel ou pour le pfa absolu.
   # 
-  def image_magick_code(real_pfa)
+  # @param current_left [Integer|Float]
+  #         Le left sur lequel on se trouve, pour savoir si ça déborde
+  # 
+  def image_magick_code(real_pfa, current_left)
     code =  if type == :sequence
               CODE_IMAGEMAGICK_SEQUENCE
             else
@@ -385,21 +412,30 @@ module MagickPFA
     data_temp = {
       l: real_pfa ? left : abs_left, # alignement gauche
       t: real_pfa ? top : abs_top, # top
-      w: 400, # largeur pour la marque (pour le moment, arbitraire)
-      h: 200, # hauteur pour la marque (sur deux lignes)
+      w: Label_Width[type], # largeur pour la marque (pour le moment, arbitraire)
+      h: Label_Height[type], # hauteur pour la marque (sur deux lignes)
       fs: FONTSIZES[type],
+      a:  'Center', # modifié par l'overlay
       m: mark.gsub(/ /,"\\n"),
     }
+
+
     data_temp.merge!({
       # Noter que ci-dessous on n'utilise pas le @width de l'élément
       # pour avoir des ronds uniformes
-      r:  data_temp[:l] + 20,
+      r:  data_temp[:l] + 20, # right (pour la boite du nom)
       b:  data_temp[:t] + 20,
       lm: data_temp[:l] - data_temp[:w] / 2, # le left de la marque du nom
       tm: data_temp[:t] - 250, # le top de la marque
       lh: data_temp[:l] - data_temp[:w] / 2, # le left de l'horloge
       th: data_temp[:t] + 150, # le top de l'horloge
     })
+
+    if current_left && data_temp[:lm] < current_left
+      # dbg "PROBLÈME D'OVERLAY avec #{id} (:l)".rouge
+      data_temp[:lm] = current_left
+      data_temp[:a]  = 'West'
+    end
 
     code % data_temp
   end
@@ -411,7 +447,7 @@ module MagickPFA
     -stroke black
     -fill gray40
     -draw "circle %{l},%{t} %{r},%{b}"
-    \\( -extent %{w}x%{h} -pointsize %{fs} -stroke black -fill black -background transparent -gravity Center 
+    \\( -extent %{w}x%{h} -pointsize %{fs} -stroke black -fill black -background red -gravity %{a} 
     label:"%{m}" \\) -geometry +%{lm}+%{tm} -gravity NorthWest -composite
     CMD
 

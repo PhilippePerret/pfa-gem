@@ -81,8 +81,8 @@ class ImgBuilder < AnyBuilder
       @code_image_magick << acte.abs_act_name_code
       @code_image_magick << acte.act_name_code
       # --- Horloge de l'acte ---
-      @code_image_magick << acte.horloge_code(false)
-      @code_image_magick << acte.horloge_code(true)
+      @code_image_magick << acte.horloge_code(false, nil)
+      @code_image_magick << acte.horloge_code(true, nil)
     end
 
     # --- Horloges de fin ---
@@ -94,19 +94,27 @@ class ImgBuilder < AnyBuilder
     @code_image_magick << pfa.denouement.horloge_fin(true)
 
 
-    # --- Autres noeuds/séquences ---
+    # --- IMPRESSION DES AUTRES NOEUDS/SÉQUENCES ---
     # 
     # On passe en revue tous les autres éléments du paradigme réel
     # et s'ils sont imprimable, on les ajoute.
+    @last_abs_left = nil
+    @last_left = nil
     pfa.data.values.each do |node|
       next if node.part? # déjà traité
       next unless node.drawnable? # pas imprimable
       # -- Mark et nom --
-      @code_image_magick << node.image_magick_code(false)
-      @code_image_magick << node.image_magick_code(true)
+      @code_image_magick << node.image_magick_code(false, @last_abs_left)
+      @code_image_magick << node.image_magick_code(true, @last_left)
       # -- Les horloges --
-      @code_image_magick << node.horloge_code(false)
-      @code_image_magick << node.horloge_code(true)
+      @code_image_magick << node.horloge_code(false, @last_abs_left)
+      @code_image_magick << node.horloge_code(true, @last_left)
+      # 
+      # On garde en mémoire les dimensions pour savoir si ça
+      # va manger dessus (overlay)
+      # 
+      @last_abs_left  = node.abs_left + [ MagickPFA::Horloge_Width[node.type]/2, MagickPFA::Label_Width[node.type]/2 ].max
+      @last_left      = node.left     + [ MagickPFA::Horloge_Width[node.type]/2, MagickPFA::Label_Width[node.type]/2 ].max
     end
 
 

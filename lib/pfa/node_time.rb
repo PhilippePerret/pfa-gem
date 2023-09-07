@@ -89,7 +89,6 @@ class NTime
 
   def background_per_offset
     @background_per_offset ||= begin
-      dbg("offset > 120 est #{(offset > 120).inspect}".bleu)
       if offset > 120
         'gray40' # offset trop grand
       else
@@ -99,7 +98,6 @@ class NTime
   end
   def foreground_per_offset
     @foreground_per_offset ||= begin
-      dbg("offset < 60 est #{(offset < 60).inspect}".bleu)
       if offset < 60
         'gray60'
       elsif offset < 120
