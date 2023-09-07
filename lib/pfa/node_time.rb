@@ -44,21 +44,75 @@ class NTime
     @as_duree ||= PFA.s2h(secondes, **{as: :duree})
   end
 
+  # -- Méthodes de décalage --
+   
+  def calc_offset(abs_time)
+    offset_secondes = (abs_time.to_i - self.to_i).abs
+    @offset     = self.class.new(offset_secondes)
+    @hasoffset  = offset > 30
+  end
+
   # @return [String] Une horloge qui indique le décalage avec 
-  # la valeur idéale (seulement pour les noeuds relatifs).
+  # la valeur idéale (seulement pour les noeuds relatifs) si ce
+  # décalage existe.
   # 
   # @param abs_time [PFA::NTime] Le temps absolu
   # 
   def as_horloge_with_offset(abs_time)
     @as_horloge_with_offset ||= begin
-      if self.to_i == abs_time.to_i
-        self.as_horloge
-      else
+      if offset?
         signe   = self > abs_time ? '+' : '-'
-        offset  = self.class.new((abs_time.to_i - self.to_i).abs)
         "#{self.as_horloge} (#{signe}#{offset.as_duree})" 
+      else
+        self.as_horloge
       end
     end
+  end
+
+  # @return true s'il y a un décalage trop important avec le 
+  # temps absolu
+  # @noter que cette méthode existe aussi pour le temps absolu
+  def offset?
+    @hasoffset === true
+  end
+
+  def offset_as_horloge(abs_time)
+    @offset_as_horloge ||= begin
+      if @hasoffset
+        signe   = self > abs_time ? '+' : '-'
+        " (#{signe}#{offset.as_duree})" 
+      else
+        " "
+      end
+    end
+  end
+
+  def background_per_offset
+    @background_per_offset ||= begin
+      dbg("offset > 120 est #{(offset > 120).inspect}".bleu)
+      if offset > 120
+        'gray40' # offset trop grand
+      else
+        'transparent'
+      end
+    end
+  end
+  def foreground_per_offset
+    @foreground_per_offset ||= begin
+      dbg("offset < 60 est #{(offset < 60).inspect}".bleu)
+      if offset < 60
+        'gray60'
+      elsif offset < 120
+        'gray20'
+      else
+        'white'
+      end
+    end
+  end
+
+  # [PFA::NTime] Décalage entre le temps absolu et le temps réel
+  def offset
+    @offset
   end
 
   def to_i

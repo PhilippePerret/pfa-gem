@@ -157,6 +157,26 @@ module MagickPFA
     rem_const_if_exists('BASE_FONTSIZE') # tests
     MagickPFA.const_set('BASE_FONTSIZE', params[:font_size])
 
+    # Taille de fonte des horloges par partie
+    rem_const_if_exists('FontSize_Horloges') # tests
+    MagickPFA.const_set('FontSize_Horloges', {
+      part:     1.0 * BASE_FONTSIZE,
+      sequence: 0.9 * BASE_FONTSIZE,
+      noeud:    0.8 * BASE_FONTSIZE,
+    })
+    rem_const_if_exists('Horloge_Width') # tests
+    MagickPFA.const_set('Horloge_Width', {
+      part:     250,
+      sequence: 200,
+      noeud:    200
+    })
+    rem_const_if_exists('Horloge_Height') # tests
+    MagickPFA.const_set('Horloge_Height', {
+      part:     80,
+      sequence: 50,
+      noeud:    50
+    })
+
   end # define_dims_constants
 
 
@@ -199,6 +219,84 @@ module MagickPFA
   #   gv: top + LINE_HEIGHT,  # pour la géométrie, décalage vertical
   # }
 
+  # --- HORLOGES ---
+
+  # Code ImageMagick de l'horloge pour les parties
+  # 
+  CODE_HORLOGE_PART = <<~CMD.strip.freeze
+    -pointsize %{fs}
+    -stroke gray20
+    -strokewidth 1
+    -fill gray20
+    -background transparent
+    -gravity NorthWest
+    -draw "text %{l},%{t} '%{mk}'"
+    CMD
+  CODE_HORLOGE_FIN = <<~CMD.strip.freeze
+    -pointsize %{fs}
+    -stroke gray20
+    -strokewidth 1
+    -fill gray20
+    -background transparent
+    -gravity NorthEast
+    -draw "text 30,%{t} '%{mk}'"
+    CMD
+  # Code ImageMagick pour indiquer le décalage entre le temps réel
+  # et le temps absolu.
+  CODE_OFFSET = <<~CMD.strip.freeze
+    \\( -extent %{wo}x%{ho} -pointsize %{fso} -background %{bgo}
+    -fill %{fgo} -stroke %{fgo} -strokewidth 1 -gravity Center 
+    label:"%{mko}" \\) -geometry +%{lo}+%{to} -gravity NorthWest -composite    
+    CMD
+  # Code ImageMagick de l'horloge pour les autres choses
+  # 
+  CODE_HORLOGE_AUTRES = <<~CMD.strip.freeze
+    \\( -pointsize %{fs} \\)
+    CMD
+  CODE_HORLOGE_PER_TYPE = {
+    part:     CODE_HORLOGE_PART,
+    sequence: CODE_HORLOGE_AUTRES, 
+    noeud:    CODE_HORLOGE_AUTRES, 
+  }
+  def horloge_code(real_pfa)
+    start_ntime = real_pfa ? start_at : abs_start
+    #
+    # Si c'est le noeud réel, il faut calculer son décalage avec le
+    # noeud absolu
+    # 
+    start_at.calc_offset(abs_start) if real_pfa
+    #
+    # Les données template en fonction du pfa absolu ou réel
+    # 
+    data_template = {
+      w:    Horloge_Width[type],  # largeur (sauf pour actes)
+      # h:    30, # hauteur de l'horloge (surtout pour décalage)
+      l:    (real_pfa ? left : abs_left) + 40,  # left de l'horloge
+      t:    (real_pfa ? top : abs_top) + 500,  # top de l'horloge (et du décalage)
+      fs:   FontSize_Horloges[type], # Font size
+      mk:   start_ntime.to_horloge, # Horloge
+    }
+    #
+    # On ajoute les valeurs pour le pfa réel
+    # 
+    data_template.merge!({
+      wo:   Horloge_Width[type] - 50,  # largeur (sauf pour actes)
+      ho:   Horloge_Height[type],
+      lo:   (real_pfa ? left : abs_left) + Horloge_Width[type] + 10, # left de la marque de décalage
+      to:   data_template[:t] -20,  # top du décalage
+      fso:  FontSize_Horloges[type] - 2, # Font size pour le décalage
+      mko:  start_ntime.offset_as_horloge(abs_start), # marque du décalage
+            # @note
+            #   Il faut impérativement appeler offset_as_horloge avant
+            #   le reste ci-dessous, 
+      bgo:  start_ntime.background_per_offset, # background du décalage 
+      fgo:  start_ntime.foreground_per_offset, # couleur du décalage      
+    }) if real_pfa
+
+    code =  CODE_HORLOGE_PER_TYPE[type]
+    code += ' ' + CODE_OFFSET if real_pfa
+    code % data_template
+  end
   
   # [BashCode] Code ImageMagick pour le titre des paradigmes
   def titre_abs_pfa
@@ -210,16 +308,15 @@ module MagickPFA
 
   # [BashString] Code pour dessiner le noeud, quand c'est un acte,
   # dans l'image.
-  def abs_act_box_code
+  def act_box_code(real_pfa)
     # @note : Le + LINE_HEIGHT sert à laisser la place pour écrire 
     # le titre "PARADIGME RÉEL/IDÉAL DU FILM"
     CODE_BOITE_ACTE % {
-      lf: abs_left, tp: abs_top + LINE_HEIGHT, rg: abs_right, bt: abs_bottom
+      lf: real_pfa ? left : abs_left, 
+      tp: (real_pfa ? top : abs_top) + LINE_HEIGHT, 
+      rg: real_pfa ? right : abs_right, 
+      bt: real_pfa ? bottom : abs_bottom
     }
-  end
-  def act_box_code
-    # @note : Le + LINE_HEIGHT servira à écrire le titre "PARADIGME RÉEL/IDÉAL DU FILM"
-    CODE_BOITE_ACTE % {lf: left, tp: top + LINE_HEIGHT, rg: right, bt: bottom}
   end
 
   # [BashString] Code pour dessiner les noms des parties (actes)
@@ -239,36 +336,16 @@ module MagickPFA
     }
   end
 
-  # @return [Array<BashString>] le code Image Magick pour construire 
-  # le noeud courant, ligne à ligne
-  # Cette méthode est appelée par tous les types de noeud et permet
-  # de générer le code qui les dessinera sur l'image.
-  # 
-  # @note
-  # 
-  #   Ce code retourne le code pour le paradigme absolu comme pour
-  #   le paradigme relatif. À l'avenir, il serait possible de n'en
-  #   obtenir qu'un seul. D'où le paramètre +options+ qui est 
-  #   inutilisé pour le moment
-  # 
-  #   On concerve les lignes pour pouvoir localiser facilement les
-  #   erreurs éventuelles.
-  # 
-  def full_code_image_magick(**options)
-    code_image_magick << "\n" + full_abs_code_image_magick
-    # code_image_magick << "\n" + full_real_code_image_magick
+  def horloge_fin(real_pfa)
+    CODE_HORLOGE_FIN % {
+      w:    Horloge_Width[type],  # largeur (sauf pour actes)
+      l:    PFA_WIDTH - Horloge_Width[type],  # left de l'horloge
+      t:    (real_pfa ? top : abs_top) + 500,  # top de l'horloge (et du décalage)
+      fs:   FontSize_Horloges[type], # Font size
+      mk:   pfa.duration.as_horloge
+    }
   end
 
-  #
-  # 
-  # L'ordre est important
-  # ---------------------
-  #   label:"LABEL" -gravity Center
-  #   # => Place le texte au nord-ouest (s'il n'y a aucune indication avant)
-  #   -gravity Center label:"LABEL"
-  #   # => Place le texte au centre horizontal et vertical
-  # 
-  # 
 
   # @return [Array<BashString>] Les lignes pour construire le noeud,
   # en version absolue (i.e. PFA idéal en fonction de la durée du film)
@@ -290,72 +367,9 @@ module MagickPFA
   #     -gravity #{GRAVITIES[type]}
   # -background none
 
-  def full_real_code_image_magick
-    <<~CMD.strip + "\n" + code_image_magick_labels_real
-    #{send("img_lines_for_real_#{type}".to_sym)}
-    CMD
-  end
-  def code_image_magick_labels_real
-    <<~CMD.strip.tap { |c| dbg("-> code_image_magick_labels_real\n#{c}".orange) }
-    -pointsize #{font_size}
-    -strokewidth #{FONTWEIGHTS[type]}
-    -gravity Center
-    -draw "text #{left},200 '#{mark}'"
-    #{start_at.as_img_horloge_code(self, **{pfa_type: :real, abs_time: abs_start, gravity:'northwest'})}
-    CMD
-  end
-  # -annotate +#{left + width / 2}+#{demiheight} "#{mark}" (fonctionne pour mettre le label)
-  def OLD_code_image_magick_labels_real
-    <<~CMD.strip.tap { |c| dbg("-> code_image_magick_labels_real\n#{c}".orange) }
-    \\(
-    -stroke #{COLORS[type]}
-    -fill #{COLORS[type]}
-    -strokewidth #{FONTWEIGHTS[type]}
-    -pointsize #{font_size}
-    -annotate +10+100 '#{mark}'
-    -background transparent
-    -size #{img_surface}
-    -trim
-    -gravity #{GRAVITIES[type]}
-    \\)
-    -gravity Center
-    -geometry +#{left}+1000
-    -composite
-    #{start_at.as_img_horloge_code(self, **{pfa_type: :real, abs_time: abs_start, gravity:'northwest'})}
-    CMD
-  end
-    # label:"#{mark}"   # attention : pas de "-" (tiret)
-  #   -size #{img_surface}
-  #   -extent #{img_surface}
-    # -extent 500x500
-
-
-  # La marque pour une partie absolue (un rectangle)
-  def img_lines_for_abs_part
-    # La boite de l'acte idéal
-    <<~CMD.strip#.tap { |c| dbg("-> img_lines_for_abs_part :\n#{c}".orange) }
-    -background transparent
-    -stroke #{DARKERS[:part]}
-    -fill white
-    -strokewidth #{ABS_BORDERS[:part]}
-    -draw "rectangle #{abs_left},#{abs_top} #{abs_right},#{abs_bottom}"
-    CMD
-  end
-
-  # La boite de l'acte du paradigme réel (et seulement la boite)
-  def img_lines_for_real_part
-    <<~CMD.strip#.tap {|s| dbg("img_lines_for_real_part :\n#{s}".bleu) }
-    -background transparent
-    -stroke #{DARKERS[:part]}
-    -fill transparent
-    -strokewidth #{ABS_BORDERS[:part]}
-    -draw "rectangle #{left},#{top} #{right},#{bottom}"
-    CMD
-  end
-
-
 
   # La marque pour une séquence (un crochet allongé)
+  # 
   def img_lines_for_real_sequence
     <<~CMD
     -strokewidth #{AnyBuilder::BORDERS[:seq]}

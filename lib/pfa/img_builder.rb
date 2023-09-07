@@ -74,12 +74,23 @@ class ImgBuilder < AnyBuilder
     actes.each do |acte|
       # acte.full_code_image_magick
       # -- Cadre de la partie (acte) --
-      @code_image_magick << acte.abs_act_box_code
-      @code_image_magick << acte.act_box_code
+      @code_image_magick << acte.act_box_code(true)
+      @code_image_magick << acte.act_box_code(false)
       # --- Nomde l'acte --
-      @code_image_magick  << acte.abs_act_name_code
-      @code_image_magick  << acte.act_name_code
+      @code_image_magick << acte.abs_act_name_code
+      @code_image_magick << acte.act_name_code
+      # --- Horloge de l'acte ---
+      @code_image_magick << acte.horloge_code(false)
+      @code_image_magick << acte.horloge_code(true)
     end
+
+    # --- Horloges de fin ---
+    # 
+    # @note
+    #   Peu importe le noeud qui est appelé
+    # 
+    @code_image_magick << pfa.denouement.horloge_fin(false)
+    @code_image_magick << pfa.denouement.horloge_fin(true)
 
     # 
     # Pour essayer de recomprendre comment ça marche

@@ -89,7 +89,14 @@ class Node
   end
 
   def abs_right
-    @abs_right ||= abs_left + abs_width
+    @abs_right ||= begin
+      if id == 'DE' # denouement
+        # Pour que le trait du dénouement soit dans l'image
+        abs_left + abs_width - 2
+      else
+        abs_left + abs_width
+      end
+    end
   end
 
   def abs_top
@@ -123,7 +130,14 @@ class Node
   end
 
   def right
-    @right ||= left + width
+    @right ||= begin 
+      if id == 'DE' # denouement
+        # Pour que le trait du dénouement soit dans l'image
+        left + width - 2
+      else
+        left + width
+      end
+    end
   end
 
   def top
@@ -172,6 +186,10 @@ class Node
 
   def type
     abs_data[:type].to_sym
+  end
+
+  def id
+    abs_data[:id]
   end
 
   # --- Calculated Values (dimensions) ---

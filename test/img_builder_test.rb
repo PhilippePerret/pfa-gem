@@ -20,7 +20,7 @@ class ImgBuilderTests < Minitest::Test
     pfa.add :exposition, {t: '0+0+20', d:"C'est l'exposition"}
     pfa.add :incident_declencheur, {t:'0,10,0', d:"Cet ID"}
     pfa.add :pivot1, {t: '0,15,0', d:'Ce pivot', duree: 136}
-    pfa.add :developpement_part1, {t: '0,30,0', d:'Ce Dev part 1'}
+    pfa.add :developpement_part1, {t: '0,29,0', d:'Ce Dev part 1'}
     pfa.add :cle_de_voute, {t: '0,60,0', d:'Cette clé de voute', duree: 120}
     pfa.add :developpement_part2, {t: '0,70,0', d:'Ce Dev part II'}
     pfa.add :pivot2, {t: '0,80,0', d:'Ce pivot', duree: 11*60}

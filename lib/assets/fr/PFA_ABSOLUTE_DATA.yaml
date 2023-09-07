@@ -161,7 +161,7 @@ nodes:
   denouement:
     printed:      true
     type:         part
-    id:           'DE'
+    id:           'DE' # IMPÉRATIF
     hname:        'DÉNOUEMENT'
     abs_start:    3/4
     abs_duration: 1/4
@@ -188,7 +188,7 @@ nodes:
     printed:      true
     required:     false
     type:         sequence
-    id:           "DE"
+    id:           "DS"
     hname:        "Désinence"
     description:  "Terminaison extrême du film, après que le climax a été joué."
     abs_start:    1 - 1/24 # p.e. 120 mn - 5 mn = 115 mn
