@@ -1,9 +1,11 @@
 require_relative 'imagemagick_module'
+require_relative 'pfa_element_module'
 
 module PFA
 class RelativePFA
 class Node
 
+  include PFAElementModule
   include MagickPFA
 
   attr_reader :pfa, :key
@@ -115,10 +117,6 @@ class Node
     @img_abs_surface ||= "#{abs_width}x#{abs_height}"
   end
 
-  def abs_font_size
-    @abs_font_size ||= MagickPFA::BASE_FONTSIZE * MagickPFA::ABS_FONTSIZES[type]
-  end
-
   # -- Dimensions Relatives --
 
   def left
@@ -157,10 +155,6 @@ class Node
     @img_surface ||= "#{width}x#{height}"
   end
 
-  def font_size
-    @font_size ||= MagickPFA::BASE_FONTSIZE * MagickPFA::FONTSIZES[type]
-  end
-
 
   # --- Predicate Methods ---
 
@@ -170,7 +164,6 @@ class Node
   def after?(node)
     return start_at > node.start_at
   end
-
 
 
   # --- Absolute Data ---

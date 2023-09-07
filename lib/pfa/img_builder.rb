@@ -64,9 +64,10 @@ class ImgBuilder < AnyBuilder
 
     #
     # Les titres des deux PFA
+    # (on peut utiliser n'importe quel noeud pour les afficher)
     # 
-    @code_image_magick << pfa.exposition.titre_abs_pfa
-    @code_image_magick << pfa.exposition.titre_real_pfa
+    @code_image_magick << pfa.exposition.titre_pfa(false)
+    @code_image_magick << pfa.exposition.titre_pfa(true)
 
     #
     # Le fond, avec les actes
@@ -92,32 +93,22 @@ class ImgBuilder < AnyBuilder
     @code_image_magick << pfa.denouement.horloge_fin(false)
     @code_image_magick << pfa.denouement.horloge_fin(true)
 
-    # 
-    # Pour essayer de recomprendre comment ça marche
-    # 
-    # cmd << "-background transparent"
-    # cmd << "-stroke #{DARKERS[:part]}"
-    # cmd << "-fill white"
-    # cmd << "-strokewidth #{BORDERS[:part]}"
-    # # original : -draw "rectangle #{left},#{top} #{right},#{box_bottom}"
-    # cmd << "-draw \"rectangle 10,10 310,110\""
 
-    # cmd << "\\( -stroke #{COLORS[:part]}"
-    # cmd << "-strokewidth #{FONTWEIGHTS[:part]}"
-    # cmd << "-pointsize #{FONTSIZES[:part]}"
-    # # cmd << "-size #{surface}"
-    # cmd << "-size 300x100"
-    # cmd << "label:\"ESSAI\""
-    # cmd << "-background none"
-    # cmd << "-trim"
-    # cmd << "-gravity #{GRAVITIES[:part]}"
-    # # -extent #{surface}
-    # cmd << "-extent 300x100 \\)"
+    # --- Autres noeuds/séquences ---
+    # 
+    # On passe en revue tous les autres éléments du paradigme réel
+    # et s'ils sont imprimable, on les ajoute.
+    pfa.data.values.each do |node|
+      next if node.part? # déjà traité
+      next unless node.drawnable? # pas imprimable
+      # -- Mark et nom --
+      @code_image_magick << node.image_magick_code(false)
+      @code_image_magick << node.image_magick_code(true)
+      # -- Les horloges --
+      @code_image_magick << node.horloge_code(false)
+      @code_image_magick << node.horloge_code(true)
+    end
 
-    # cmd << "-gravity northwest"
-    # # cmd << "-geometry +#{left}+#{top}"
-    # cmd << "-geometry +10+10"
-    # cmd << "-composite"
 
     #
     # Chemin d'accès au fichier final
@@ -171,7 +162,7 @@ class ImgBuilder < AnyBuilder
   def actes
     @actes ||= begin
       pfa.data.values.select do |node|
-        node.type == :part
+        node.part?
       end
     end
   end

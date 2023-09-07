@@ -1,6 +1,9 @@
+require_relative 'pfa_element_module'
 module PFA
 class RelativePFA
 class DataTime
+
+  include PFAElementModule
 
   attr_reader :pfa, :key
 

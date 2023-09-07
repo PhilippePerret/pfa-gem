@@ -23,6 +23,7 @@ class ImgBuilderTests < Minitest::Test
     pfa.add :developpement_part1, {t: '0,29,0', d:'Ce Dev part 1'}
     pfa.add :cle_de_voute, {t: '0,60,0', d:'Cette clé de voute', duree: 120}
     pfa.add :developpement_part2, {t: '0,70,0', d:'Ce Dev part II'}
+    pfa.add :crise, {t: '0,75,0', d: "Ma description du second pivot"}
     pfa.add :pivot2, {t: '0,80,0', d:'Ce pivot', duree: 11*60}
     pfa.add :denouement, {t: '0,90,0', d:'Ce dénouement'}
     pfa.add :climax, {t: '0,110,0', d:'Ce climax'}

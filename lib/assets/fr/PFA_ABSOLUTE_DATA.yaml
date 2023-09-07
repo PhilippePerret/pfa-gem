@@ -30,6 +30,7 @@ nodes:
     items:        ['prelude', 'incident_perturbateur', 'incident_declencheur', 'zone_refus', 'pivot1']
   preambule:
     printed:      true
+    drawn:        false # pas sur le PFA
     required:     false
     type:         sequence
     id:           "PR"
@@ -39,6 +40,7 @@ nodes:
     abs_duration: 1/24 # p.e. 5 mn => fin à 5 mn
   incident_perturbateur:
     printed:      true
+    drawn:        true # sur le PFA
     required:     false
     type:         noeud
     id:           "IP"
@@ -47,16 +49,17 @@ nodes:
     abs_duration: 1/24 # p.e. 5 mn => fin à 10 mn
   incident_declencheur:
     printed:      true
+    drawn:        true # sur le PFA
     required:     true
     type:         noeud
     id:           "ID"
-    type:         moment
     hname:        "Incident déclencheur"
-    description:  "Moment qui déclencher l'histoire, qui permet de définir l'objectif ou la QDF (Question Dramatique Fondamentale)."
+    description:  "Moment qui déclenche l'histoire, qui permet de définir l'objectif ou la QDF (Question Dramatique Fondamentale)."
     abs_start:    2/24 # p.e. 10 mn
     abs_duration: 1/24 # p.e. 5 mn => fin à 15 mn
   zone_refus:
     printed:      true
+    drawn:        false # pas sur le PFA
     required:     false
     type:         sequence
     id:           "ZR"
@@ -66,6 +69,7 @@ nodes:
     abs_duration: 2/24 # p.e. 10 mn => fin à 25 mn
   pivot1:
     printed:      true
+    drawn:        true # sur le PFA
     required:     true
     type:         noeud
     id:           "P1"
@@ -77,6 +81,7 @@ nodes:
   # --- DÉVELOPPEMENT PARTIE 1 ---
   developpement_part1:
     printed:      true
+    drawn:        true # sur le PFA
     type:         part
     id:           'D1'
     hname:        'DÉV. PART I'
@@ -85,6 +90,7 @@ nodes:
     items: ['premiere_action', 'premier_tiers', 'cle_de_voute']
   premiere_action:
     printed:      false
+    drawn:        false # pas sur le PFA
     required:     false
     type:         noeud
     id:           "A1"
@@ -94,6 +100,7 @@ nodes:
     abs_duration: null
   premier_tiers:
     printed:      true
+    drawn:        true # sur le PFA
     required:     false
     type:         noeud
     id:           "T1"
@@ -103,10 +110,11 @@ nodes:
     abs_duration: null
   cle_de_voute:
     printed:      true
+    drawn:        true # sur le PFA
     required:     false
     type:         noeud
     id:           'CV'
-    hname:        "Clé de voûte"
+    hname:        "Clé de voûte" # insécable pour ne pas être coupé là à l'affichage dans le graphique
     description:  "Scène faisant basculer l'histoire vers un autre pan, découpant le film en deux parties distinctes."
     abs_start:    1/2 - 1/48 # p.e. 60 mn - 2,5 mn 
     abs_duration: 1/24 # p.e. 5 mn
@@ -114,6 +122,7 @@ nodes:
   # --- DÉVELOPPEMENT PARTIE 2 ---
   developpement_part2:
     printed:      true
+    drawn:        true # sur le PFA
     type:         part
     id:           'D2'
     hname:        'DÉV. PART II'
@@ -122,6 +131,7 @@ nodes:
     items:        ['premiere_action_dev2', 'deuxieme_tiers', 'crise', 'pivot2']
   premiere_action_dev2:
     printed:      false
+    drawn:        false # pas sur le PFA
     required:     false
     type:         noeud
     id:           "A2"
@@ -131,6 +141,7 @@ nodes:
     abs_duration: null
   deuxieme_tiers:
     printed:      true
+    drawn:        true # sur le PFA
     required:     false
     type:         noeud
     id:           "T2"
@@ -140,6 +151,7 @@ nodes:
     abs_duration: null
   crise:
     printed:      true
+    drawn:        true # sur le PFA
     required:     false
     type:         noeud
     id:           "CR"
@@ -149,10 +161,11 @@ nodes:
     abs_duration: 1/24
   pivot2:
     printed:      true
+    drawn:        true # sur le PFA
     required:     true
     type:         noeud
     id:           "P2"
-    hname:        "Pivot 2"
+    hname:        "Second Pivot"
     description:  "Moment de l'histoire qui la fait basculer dans le dénouement (souvent la sortie de crise)."
     abs_start:    3/4 - 1/24
     abs_duration: 1/24
@@ -160,6 +173,7 @@ nodes:
   # --- DÉNOUEMENT ---
   denouement:
     printed:      true
+    drawn:        true # sur le PFA
     type:         part
     id:           'DE' # IMPÉRATIF
     hname:        'DÉNOUEMENT'
@@ -168,6 +182,7 @@ nodes:
     items:        ['premiere_action_den', 'climax', 'desinence']
   premiere_action_denouement:
     printed:      false
+    drawn:        false # pas sur le PFA
     required:     false
     type:         noeud
     id:           "A3"
@@ -177,6 +192,7 @@ nodes:
     abs_duration: null
   climax:
     printed:      true
+    drawn:        true # sur le PFA
     required:     true
     type:         noeud
     id:           "CX"
@@ -186,6 +202,7 @@ nodes:
     abs_duration: 2/24 # p.e. 10 mn => fin à 115 mn
   desinence:
     printed:      true
+    drawn:        false # pas sur le PFA
     required:     false
     type:         sequence
     id:           "DS"
