@@ -246,8 +246,8 @@ module MagickPFA
   # Code ImageMagick de l'horloge pour les parties
   # 
   CODE_HORLOGE = <<~CMD.strip.freeze
-    \\( -extent %{w}x%{h} -background %{bg} -stroke %{fg} -strokewidth 1 
-    -pointsize %{fs} -font Georgia -fill %{fg} -gravity Center label:"%{mk}" \\) 
+    \\( -extent %{w}x%{h} -background %{bg} -stroke %{fg}  -strokewidth 1 -fill %{fg}
+    -pointsize %{fs} -font Georgia -gravity Center label:"%{mk}" \\) 
     -geometry +%{l}+%{t} -gravity NorthWest -composite
     CMD
   
@@ -255,10 +255,10 @@ module MagickPFA
   CODE_HORLOGE_FIN = <<~CMD.strip.freeze
     -pointsize %{fs}
     -font Georgia
+    -background black
     -stroke white
-    -background gray20
     -strokewidth 1
-    -fill gray20
+    -fill white
     -gravity NorthEast
     -draw "text 30,%{t} '%{mk}'"
     CMD
@@ -304,8 +304,8 @@ module MagickPFA
       (real_pfa ? top : abs_top) + 50
     end
 
-    background = part? ? 'black' : 'gray20'
-    foreground = part? ? 'gray20' : 'black'
+    background = part? ? 'black' : 'gray80'
+    foreground = part? ? 'gray80' : 'black'
 
     #
     # Les données template en fonction du pfa absolu ou réel
