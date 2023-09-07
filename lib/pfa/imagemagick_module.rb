@@ -191,9 +191,9 @@ module MagickPFA
     # Hauteur de l'horloge (pour glisser l'offset en dessous)
     rem_const_if_exists('Horloge_Height') # tests
     MagickPFA.const_set('Horloge_Height', {
-      part:     92,
-      sequence: 92,
-      noeud:    92
+      part:     112,
+      sequence: 112,
+      noeud:    112
     })
 
   end # define_dims_constants
@@ -304,8 +304,8 @@ module MagickPFA
       (real_pfa ? top : abs_top) + 50
     end
 
-    background = part? ? 'black' : 'gray80'
-    foreground = part? ? 'gray80' : 'black'
+    background = part? ? 'black' : 'gray90'
+    foreground = part? ? 'gray90' : 'black'
 
     #
     # Les données template en fonction du pfa absolu ou réel
@@ -447,7 +447,7 @@ module MagickPFA
     -stroke black
     -fill gray40
     -draw "circle %{l},%{t} %{r},%{b}"
-    \\( -extent %{w}x%{h} -pointsize %{fs} -stroke black -fill black -background red -gravity %{a} 
+    \\( -extent %{w}x%{h} -pointsize %{fs} -stroke black -fill black -background white -gravity %{a} 
     label:"%{m}" \\) -geometry +%{lm}+%{tm} -gravity NorthWest -composite
     CMD
 
