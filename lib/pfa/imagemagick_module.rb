@@ -96,6 +96,7 @@ module MagickPFA
     # 
     rem_const_if_exists('LINE_HEIGHT') # tests
     MagickPFA.const_set('LINE_HEIGHT', (MagickPFA::PFA_HEIGHT.to_f / 15).to_i)
+    # MagickPFA.const_set('LINE_HEIGHT', (MagickPFA::PFA_HEIGHT.to_f / 10).to_i)
 
     rem_const_if_exists('QUART_LINE_HEIGHT') # tests
     MagickPFA.const_set('QUART_LINE_HEIGHT', LINE_HEIGHT / 4)

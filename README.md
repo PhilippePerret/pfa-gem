@@ -28,6 +28,8 @@ require 'pfa'
 pfa = PFA::new
 ~~~
 
+> Ou on définit directement toutes les valeurs [cf. ci-dessous](#with-all-data)
+
 Ensuite, on le renseigne en lui ajoutant des nœuds :
 
 ~~~ruby
@@ -48,12 +50,47 @@ pfa.end_time = "1:58:56"
 
 ~~~
 
+<a name="with-all-data"></a>
+
+### Définition en fournissant toutes les données
+
+On peut aller très vite en définissant tout :
+
+~~~
+require 'pfa'
+
+data_paradigme = {
+  zero: 35,
+  end_time: 2*60+15,
+  incident_declencheur: {t:'0+10+25', d:"LUI rencontre ELLE pour la première fois."},
+  pivot1: {t:'0:25;56', d:"<description du premier pivot"},
+  developpement_part1: {t: 30*60, d:"<description de la première partie du développement>"}
+  # etc. avec toutes les données requises (cf. ci-dessous)
+  # ...
+}
+
+pfa = PFA.new(data_paradigme)
+pfa.to_img 
+# => produit l'image du paradigme
+
+# Ou
+pfa.to_img(**{as: :default})
+# => Produit l'image avec d'autres dimension
+
+~~~
+
+> Noter les différentes formes que peut prendre le temps : une horloge normale ("0:23:45"), une horloge avec des "+" (attention : ce n'est pas une addition, c'est juste un signe plus facile à écrire), une horloge avec des virgules ("0,3,15" — plus facile à écrire aussi), un nombre de secondes (3752), et même un temps `Time` (Time.at(152)).
+
+### Données minimales 
+
 Pour pouvoir être construit, un *PFA* doit définir au moins les nœuds suivants. Tous ces nœuds doivent être définis avec la méthode `pfa#add` et les deux arguments requis, la clé symbolique (p.e. `:pivot2`) et une table contenant la clé `t:` (timecode), la clé `d:` (description) et optionnellement la clé `:duree` (nombre de secondes).
 
 ~~~bash
+:exposition 
 :incident_declencheur
 :pivot1
 :developpement_part1
+:developpement_part2
 :pivot2
 :denouement
 :climax
@@ -64,6 +101,7 @@ Pour pouvoir être construit, un *PFA* doit définir au moins les nœuds suivant
 La liste complète des clés utilisables et définissables de la même manière est :
 
 ~~~bash
+:exposition
 :preambule
 :incident_perturbateur
 :incident_declencheur
@@ -86,13 +124,15 @@ La liste complète des clés utilisables et définissables de la même manière 
 
 Une fois les nœuds du paradigme définis, on peut le construire…
 
-* sous forme d'image JPEG (de 4000x1000 en 300ppi) :
+* sous forme d'image JPEG :
   
   ~~~ruby
   pfa.to_img
   ~~~
 
-* sous forme de fichier HTML :
+  Par défaut, ce sera une image pour un livre (environ A5) d'analyse de film comme ceux produit par la collection « Leçons du cinéma ».
+
+* sous forme de fichier HTML (non encore implémenté) :
 
   ~~~ruby
   pfa.to_html

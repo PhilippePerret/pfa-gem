@@ -9,8 +9,13 @@
 51: >
   La valeur %{value} devrait être un nombre de secondes…
 52: > # valeur incorrecte pour estimer un temps
-  La valeur %{value} est incorrecte. Il faut un \Time, un \String (de type
-  horloge) ou un \Integer.
+  La valeur de temps %{value} est incorrecte.
+  Les formats pour les temps valides sont :
+    - un nombre de secondes      126
+    - un Time                     Time.at(3600+56)
+    - une horloge "virgule"       "1,46,12"
+    - une horloge "plus"          "1+46+12"
+    - une horloge normale         "0:12:45"
 53: > # valeur incorrecte pour initialiser un NTime
   La valeur %{value} est incorrecte pour initialiser un \PFA::NTime
   Il faut fournir au choix :
@@ -37,36 +42,59 @@
 
 200: >
   Le zéro doit être défini.
+
   Utiliser pfa.add(:zero, 'H+M+S')
 201: >
   Le temps réel de fin doit être défini.
+  
   Utiliser pfa.add(:end_time, 'H+M+S')
 202: >
   L'incident déclencheur doit être défini.
+  
   Utiliser pfa.add(:incident_declencheur, {t:'h,m,s', d:"<description>"[, duree: <secondes>]})
 203: >
   Le premier pivot doit être défini.
+  
   Utiliser pfa.add(:pivot1, {t:'h,m,s', d:"<description>"[, duree: <secondes>]})
 204: >
   La première partie de développement doit être définie.
+  
   Utiliser pfa.add(:developpement_part1, {t:'h,m,s', d:"<description>"})
 205: >
   Le second pivot doit être défini.
+  
   Utiliser pfa.add(:pivot2, {t:'h,m,s', d:"<description>"[, duree: <secondes>]})
 206: >
   Le dénouement doit être défini.
+  
   Utiliser pfa.add(:denouement, {t:'h,m,s', d:"<description>"})
 207: >
   Le climax doit être défini.
+  
   Utiliser pfa.add(:climax, {t:'h,m,s', d:"<description>"[, duree: <secondes>]})
 208: >
   La seconde moitié de développement doit être définie.
+  
   Utiliser pfa.add(:developpement_part2, {t:'h,m,s', d:"<description>"})
+209: >
+  L'exposition du film doit être définie.
 
+  Utiliser pfa.add(:exposition, {t:'<horloge>', d:'<description>'})
+
+219: >
+  La propriété :%{key} est mal définie. Ça devrait être une table
+  contenant au minimum :t (ou :time) et :d (ou :description). Or,
+  c'est une instance de type %{classe}.
 220: >
-  Le temps sont mal réglés.
+  Les temps sont mal réglés.
   Le temps de :%{key_before} (%{h_before}) devrait être avant le temps de 
   :%{key_after} (%{h_after})…
+221: >
+  La table de donnée pour le noeud :%{noeud} doit définir le temps
+  (avec la clé :t ou :time).
+222: >
+  La table de donnée pour le noeud :%{noeud} doit définir la description
+  humaine du noeud, à l'aide des clés :d ou :description.
 
 # --- Image (building) ---
 

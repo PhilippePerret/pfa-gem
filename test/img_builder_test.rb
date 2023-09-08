@@ -54,6 +54,26 @@ class ImgBuilderTests < Minitest::Test
     assert_silent { builder.build(**{as: :real_book}) }
   end
 
+  # Test qu'on peut instancier le PFA avec les données et
+  # le construire avec succès.
+  def test_instanciation_with_data
+    pdata = nil
+    pdata = {
+      zero: Time.at(21),
+      end_time: Time.at(3600 * 2 + 54),
+      exposition: {t: Time.at(95), d: "C'est l'exposition du film"},
+      incident_declencheur: {t: '0,12,00',  d:"LUI rencontre ELLE."},
+      pivot1:               {t:'0,32,57',   d:"Le pivot qui fait basculer dans le développement."},
+      developpement_part1:  {t:'0+35+9',    d:"Description de la première partie de développement"},
+      developpement_part2: {t: Time.at(3600), d:"Une bonne description de développement partie 2"},
+      pivot2: {t:3600*2 - 30*60, d:"<le pivot 2>"},
+      denouement: {time: '1:33:12', description: "Ça se dénoue !"},
+      climax: {time: '1+56+33', d:"Le climax voit s'affronter toutes les forces."},
+    }
+    assert_silent { PFA.new(pdata).to_img(**{as: :real_book})}
+  end
+
+
   def test_calcul_de_la_duree_du_film
     define_bon_pfa
     assert_respond_to pfa, :duree

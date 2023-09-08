@@ -22,6 +22,7 @@ module PFA
   #     formats possible, comme 'H:M:S', 'H+M+S' ou 'H,M,S'
   # 
   def self.h2s(horloge)
+    horloge.match?(REG_HORLOGE) || raise(PFAFatalError.new(52, **{value:"#{horloge.inspect}::#{horloge.class}"}))
     s, m, h = horloge.split(/[+,:]/).reverse.collect {|n| n.to_i}
     return (s||0) + (m||0) * 60 + (h||0) * 3600
   end
@@ -64,5 +65,5 @@ module PFA
     return s2h(time.to_i)
   end
 
-  REG_HORLOGE = /[0-9]{1/.freeze
+  REG_HORLOGE = /^([0-9][+:,])?([0-9]{1,2}[+:,])?[0-9]{1,2}$/.freeze
 end#/module PFA

@@ -162,6 +162,7 @@ class Node
   # le nœud [RelativePFA::Node] +node+
   # 
   def after?(node)
+    # dbg "node = #{node.inspect}".orange
     return start_at > node.start_at
   end
 
@@ -208,8 +209,8 @@ class Node
   def parse_raw_value(value)
     @raw_value = value 
     if value.is_a?(Hash)
-      @start_at     = NTime.new(value[:t]||value[:time]||value[:start_at], pfa.zero.to_i)
-      @description  = value[:d]||value[:description]
+      @start_at     = NTime.new(value[:t], pfa.zero.to_i)
+      @description  = value[:d]
       if value.key?(:duree) || value.key?(:duration)
         # La durée est fournie en secondes, elle doit donc être 
         # ramenée à la valeur sur 120 minutes

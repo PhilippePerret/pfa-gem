@@ -5,8 +5,8 @@ module PFA
   # Pour pouvoir faire :
   #   pfa = PFA.new
   # 
-  def self.new(**params)
-    RelativePFA.new(**params)
+  def self.new(data = nil)
+    RelativePFA.new(data)
   end
 
   # # Pour obtenir le PFA courant (au mépris de toute loi de Démeter…)
@@ -20,12 +20,20 @@ module PFA
 
 class RelativePFA
 
-  # \Hash Les données du Paradigme de Field Augmenté
+  # [Hash] Les données du Paradigme de Field Augmenté
   attr_reader :data
 
-  def initialize(**params)
+  # Instanciation du paradigme
+  # 
+  # @param input_data [Hash|Nil] Données du paradigme fournies à l'instanciation
+  # 
+  def initialize(input_data = nil)
     @data = {}
-    # PFA.current = self
+    #
+    # -- Traitement de toutes les données fournies --
+    # 
+    input_data ||= {}
+    input_data.each { |k, v| add(k, v) }
   end
 
   def method_missing(method_name, *args, &block)
@@ -52,6 +60,14 @@ class RelativePFA
       #
       # Ajout d'un nœud
       # 
+      # @note
+      #   Un noeud doit toujours être défini par une table contenant
+      #   :t (ou :time) et :d (ou :description)
+      # 
+      #   La donnée doit être valide. On en profite aussi pour bien
+      #   définir le temps.
+      #
+      value = value_valid?(value, key)
       data.merge!(key => RelativePFA::Node.new(self, key, value))
 
     elsif AbsolutePFA.data[:times].key?(key)
@@ -64,8 +80,20 @@ class RelativePFA
     end
   end
 
+  # Test la pertinence de la définition de la clé +key+ et produit une
+  # erreur éclairante en cas de problème.
+  #
+  def value_valid?(value, key)
+    value.is_a?(Hash) || raise(PFAFatalError.new(219, **{key: key, classe: "#{value.class}"}))
+    value.merge!(t: value[:time]) if value.key?(:time)
+    value.merge!(d: value[:description]) if value.key?(:description)
+    value.key?(:t)    || raise(PFAFatalError.new(221, **{noeud: key, classe: "#{value.class}"}))
+    value[:t] = PFA.time_from(value[:t])
+    value.key?(:d)    || raise(PFAFatalError.new(222, **{noeud: key}))
+    return value
+  end
 
-  # @return \Bool true si les données relative du PFA sont valides
+  # @return true si les données relative du PFA sont valides
   # 
   # Donc principalement qu'elles existent et qu'elles soient 
   # conformes aux attentes.
@@ -83,6 +111,7 @@ class RelativePFA
   def valid?
     zero                  || raise(PFAFatalError.new(200))
     end_time              || raise(PFAFatalError.new(201))
+    exposition            || raise(PFAFatalError.new(209))
     incident_declencheur  || raise(PFAFatalError.new(202))
     pivot1                || raise(PFAFatalError.new(203))
     developpement_part1   || raise(PFAFatalError.new(204))
@@ -101,7 +130,9 @@ class RelativePFA
     end
     pivot2.after?(pivot1)                     || raise_time_error('pivot1', 'pivot2')
     if developpement_part2
-      developpement_part2.after?(cle_de_voute)  || raise_time_error('cle_de_voute', 'developpement_part2')
+      if cle_de_voute
+        developpement_part2.after?(cle_de_voute)  || raise_time_error('cle_de_voute', 'developpement_part2')
+      end
       pivot2.after?(developpement_part2)        || raise_time_error('developpement_part2', 'pivot2')
     end
     denouement.after?(pivot2)         || raise_time_error('pivot2','denouement')
@@ -143,12 +174,13 @@ class RelativePFA
 
   # --- Output Methods ---
 
-  def to_html
+  def to_html(**params)
     puts "Je dois apprendre à sortir en HTML".orange
   end
 
-  def to_img
-    img_builder.build
+  def to_img(**params)
+    params.key?(:as) || params.merge!(as: :real_book)
+    img_builder.build(**params)
   end
 
   def img_builder

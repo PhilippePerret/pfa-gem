@@ -16,6 +16,7 @@ class DataTime
   def time
     @time ||= PFA::NTime.new(@raw_value, 0)
   end
+  alias :start_at :time
 
   # Pour la compatibilité quand on boucle sur tous les éléments
   # des données du paradigme relatif
