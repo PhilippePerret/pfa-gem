@@ -1,7 +1,11 @@
 def dbg(str)
   STDOUT.write("\n#{str}\n")
 end
-LIB_FOLDER = File.join(__dir__)
+
+module PFA
+  LIB_FOLDER = File.join(__dir__)
+end
+
 require 'clir'
 require 'yaml'
 require 'singleton'
@@ -15,7 +19,3 @@ require 'pfa/absolute_pfa'
 require 'pfa/relative_pfa_node'
 require 'pfa/relative_pfa_datatime'
 require 'pfa/img_builder'
-
-module PFA
-
-end

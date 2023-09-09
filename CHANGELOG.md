@@ -1,5 +1,9 @@
 # Change log
 
+## 1.0.3
+
+* Isolation du LIB_FOLDER
+
 ## 1.0.2
 
 * Rectification des chemins d'accès aux dossiers principaux.
