@@ -70,7 +70,12 @@ class ImgBuilderTests < Minitest::Test
       denouement: {time: '1:33:12', description: "Ça se dénoue !"},
       climax: {time: '1+56+33', d:"Le climax voit s'affronter toutes les forces."},
     }
-    assert_silent { PFA.new(pdata).to_img(**{as: :real_book})}
+    out, err = capture_io do
+      PFA.new(pdata).to_img(**{as: :real_book})
+    end
+    assert_match(/Image(.+)produite avec succès/, out)
+
+    # TODO Vérifier que l'image correspond à ce qui est attendu
   end
 
 

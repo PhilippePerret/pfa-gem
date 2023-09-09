@@ -144,7 +144,7 @@ class ImgBuilder < AnyBuilder
     cmd_debug = cmd_finale.split("\n").collect.with_index do |line, idx|
       "#{idx + 1}: #{line.strip}"
     end.join("\n")
-    STDOUT.write "\n\nCommande finale\n#{cmd_debug}\n".bleu
+    # dbg "\n\nCommande finale\n#{cmd_debug}\n".bleu
 
     #
     # *** EXÉCUTION DE LA COMMANDE ***
