@@ -78,8 +78,8 @@ class ImgBuilder < AnyBuilder
       @code_image_magick << acte.act_box_code(true)
       @code_image_magick << acte.act_box_code(false)
       # --- Nomde l'acte --
-      @code_image_magick << acte.abs_act_name_code
-      @code_image_magick << acte.act_name_code
+      @code_image_magick << acte.act_name_code(true)
+      @code_image_magick << acte.act_name_code(false)
       # --- Horloge de l'acte ---
       @code_image_magick << acte.horloge_code(false, nil)
       @code_image_magick << acte.horloge_code(true, nil)

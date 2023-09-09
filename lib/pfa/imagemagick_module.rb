@@ -33,6 +33,13 @@ module MagickPFA
   # 
   #   Pour les tests, on utilise les valeurs
   #   4000 px x 2598 px (4000 / 1,5394)
+  # 
+  # @note
+  # 
+  #   En fait, :pfa_height ne définit pas vraiment la hauteur des
+  #   PFA (et donc de l'image) mais permet de calculer la hauteur
+  #   de ligne LINE_HEIGHT. L'image, elle, fera 12 * LINE_HEIGHT de
+  #   hauteur.
   #
   DIMS_CONSTANTS_PER_THING = {
     real_book: {
@@ -48,6 +55,8 @@ module MagickPFA
       font_size: 15
     },
   }
+
+  FONTHEIGHT_MAIN_TITLE = 25
 
   def self.rem_const_if_exists(const_name)
     if MagickPFA.const_defined?(const_name)
@@ -106,34 +115,37 @@ module MagickPFA
     # idéal
     # 
     rem_const_if_exists('VOFFSET_REL_PFA') # tests
-    MagickPFA.const_set('VOFFSET_REL_PFA', PFA_HEIGHT / 2.2)
+    MagickPFA.const_set('VOFFSET_REL_PFA', 6 * LINE_HEIGHT)
+
+    rem_const_if_exists('TOP_MARGIN')
+    MagickPFA.const_set('TOP_MARGIN', 4 * FONTHEIGHT_MAIN_TITLE)
 
     #
     # Position verticale des éléments en fonction de leur nature
     # 
     rem_const_if_exists('ABS_TOPS') # tests
     MagickPFA.const_set('ABS_TOPS', {
-        part:         0,      
-        sequence:     4 * LINE_HEIGHT,       
-        noeud:        4 * LINE_HEIGHT,
+        part:         TOP_MARGIN,
+        sequence:     TOP_MARGIN + 3 * LINE_HEIGHT,       
+        noeud:        TOP_MARGIN + 3 * LINE_HEIGHT,
     })
     rem_const_if_exists('ABS_BOTTOMS') # tests
     MagickPFA.const_set('ABS_BOTTOMS', {
-      part:         ABS_TOPS[:part]     + VOFFSET_REL_PFA - LINE_HEIGHT,
+      part:         ABS_TOPS[:part]     + VOFFSET_REL_PFA - LINE_HEIGHT - 100,
       sequence:     ABS_TOPS[:sequence] + VOFFSET_REL_PFA,
       noeud:        ABS_TOPS[:noeud]    + VOFFSET_REL_PFA,
     })
     rem_const_if_exists('TOPS') # tests
     MagickPFA.const_set('TOPS', {
-      part:         ABS_BOTTOMS[:part],
-      sequence:     ABS_TOPS[:sequence]     + VOFFSET_REL_PFA,  
-      noeud:        ABS_TOPS[:noeud]        + VOFFSET_REL_PFA - LINE_HEIGHT,
+      part:         ABS_BOTTOMS[:part]      + LINE_HEIGHT,
+      sequence:     ABS_TOPS[:sequence]     + VOFFSET_REL_PFA,
+      noeud:        ABS_TOPS[:noeud]        + VOFFSET_REL_PFA,
     })
     rem_const_if_exists('BOTTOMS') # tests
     MagickPFA.const_set('BOTTOMS', {
-      part:       ABS_BOTTOMS[:part]      + VOFFSET_REL_PFA - LINE_HEIGHT,
-      sequence:   ABS_BOTTOMS[:sequence]  + VOFFSET_REL_PFA - LINE_HEIGHT,
-      noeud:      ABS_BOTTOMS[:noeud]     + VOFFSET_REL_PFA - LINE_HEIGHT,
+      part:       ABS_BOTTOMS[:part]      + VOFFSET_REL_PFA,
+      sequence:   ABS_BOTTOMS[:sequence]  + VOFFSET_REL_PFA,
+      noeud:      ABS_BOTTOMS[:noeud]     + VOFFSET_REL_PFA,
     })
     #
     # Hauteur en fonction du type des éléments 
@@ -141,7 +153,7 @@ module MagickPFA
     rem_const_if_exists('HEIGHTS') # tests
     MagickPFA.const_set('HEIGHTS', { 
       part:     PFA_HEIGHT / 1.4,
-      sequence: 50, # PFA::LINE_HEIGHT (dans fichier relatif)
+      sequence: 50, # avant : PFA::LINE_HEIGHT (dans fichier relatif)
       noeud:    50  # idem
     })
 
@@ -197,6 +209,11 @@ module MagickPFA
       noeud:    112
     })
 
+    # Décalage vertical pour que les horloges des actes et de fin
+    # soient bien collées au bord haut
+    rem_const_if_exists('VOFFSET_MAIN_HORLOGES') # tests
+    MagickPFA.const_set('VOFFSET_MAIN_HORLOGES', Horloge_Height[:part] - 60)
+
   end # define_dims_constants
 
 
@@ -207,7 +224,7 @@ module MagickPFA
   # Le début du code de la commande convert
   def self.code_for_intro
     <<~CMD.strip
-    #{CONVERT_CMD} -size #{PFA_WIDTH}x#{PFA_HEIGHT} xc:white 
+    #{CONVERT_CMD} -size #{PFA_WIDTH}x#{LINE_HEIGHT * 12} xc:white 
     -units PixelsPerInch
     -density 300
     -background transparent
@@ -218,7 +235,7 @@ module MagickPFA
   #
   # Pour écrire le titre du paradigme
   CODE_TITRE_PARADIGME = <<~CMD.strip.freeze
-    -pointsize 25
+    -pointsize %{lh}
     -font Arial
     -draw "text %{lf},%{tp} '%{titre}'"
     CMD
@@ -249,20 +266,10 @@ module MagickPFA
   CODE_HORLOGE = <<~CMD.strip.freeze
     \\( -extent %{w}x%{h} -background %{bg} -stroke %{fg}  -strokewidth 1 -fill %{fg}
     -pointsize %{fs} -font Georgia -gravity Center label:"%{mk}" \\) 
-    -geometry +%{l}+%{t} -gravity NorthWest -composite
+    -geometry +%{l}+%{t} -gravity %{g} -composite
     CMD
+    # -gravity NorthWest
   
-  # Le code de l'horloge pour indiquer la fin du film
-  CODE_HORLOGE_FIN = <<~CMD.strip.freeze
-    -pointsize %{fs}
-    -font Georgia
-    -background black
-    -stroke white
-    -strokewidth 1
-    -fill white
-    -gravity NorthEast
-    -draw "text 30,%{t} '%{mk}'"
-    CMD
   # Code ImageMagick pour indiquer le décalage entre le temps réel
   # et le temps absolu.
   CODE_OFFSET = <<~CMD.strip.freeze
@@ -300,7 +307,7 @@ module MagickPFA
     # Le top dépend de la nature de l'élément
     # 
     thetop = if part?
-      (real_pfa ? top : abs_top) + 500
+      (real_pfa ? top : abs_top) + VOFFSET_MAIN_HORLOGES
     else
       (real_pfa ? top : abs_top) + 50
     end
@@ -320,6 +327,7 @@ module MagickPFA
       bg:   background,
       fg:   foreground,
       mk:   start_ntime.to_horloge, # Horloge
+      g:    'NorthWest',
     }
     #
     # On ajoute les valeurs pour le pfa réel
@@ -342,12 +350,27 @@ module MagickPFA
     code += ' ' + CODE_OFFSET if real_pfa
     code % data_template
   end
-  
+
+  def horloge_fin(real_pfa)
+    CODE_HORLOGE % {
+      w:    Horloge_Width[type],
+      h:    Horloge_Height[type],
+      l:    0,
+      t:    (real_pfa ? top : abs_top) + VOFFSET_MAIN_HORLOGES,
+      fs:   FontSize_Horloges[type], # Font size
+      mk:   pfa.duration.as_horloge,
+      bg:   'black',
+      fg:   'white',
+      g:    'NorthEast'
+    }
+  end
+
   # [BashCode] Code ImageMagick pour le titre des paradigmes
   def titre_pfa(for_real)
     CODE_TITRE_PARADIGME % {
       lf: 20, 
-      tp: for_real ? top + LINE_HEIGHT - 20 : abs_top + LINE_HEIGHT - 20, 
+      lh: 25, # line-height (aka font-size)
+      tp: (for_real ? top : abs_top), 
       titre: for_real ? "PARADIGME RÉEL DU FILM" : "PARADIGME IDÉAL DU FILM"
     }
   end
@@ -355,42 +378,23 @@ module MagickPFA
   # [BashString] Code pour dessiner le noeud, quand c'est un acte,
   # dans l'image.
   def act_box_code(real_pfa)
-    # @note : Le + LINE_HEIGHT sert à laisser la place pour écrire 
-    # le titre "PARADIGME RÉEL/IDÉAL DU FILM"
     CODE_BOITE_ACTE % {
       lf: real_pfa ? left : abs_left, 
-      tp: (real_pfa ? top : abs_top) + LINE_HEIGHT, 
+      tp: (real_pfa ? top : abs_top) + 50, # +50 pour ne pas coller au main title 
       rg: real_pfa ? right : abs_right, 
       bt: real_pfa ? bottom : abs_bottom
     }
   end
 
   # [BashString] Code pour dessiner les noms des parties (actes)
-  # 
-  def abs_act_name_code
+  def act_name_code(for_pfa)
     CODE_PART_NAME % {
-      w: abs_width, h: FONTSIZES[:part] + 100, n: mark, fs: FONTSIZES[:part], 
-      gh: abs_left,               # pour la géométrie, décalage par rapport au Nord-Ouest
-      gv: abs_top + LINE_HEIGHT + QUART_LINE_HEIGHT,  # pour la géométrie, décalage vertical
-    }
-  end
-  def act_name_code
-    CODE_PART_NAME % {
-      w: width, h: FONTSIZES[:part] + 100, n: mark, fs: FONTSIZES[:part], 
-      gh: left,               # pour la géométrie, décalage par rapport au Nord-Ouest
-      gv: top + LINE_HEIGHT + QUART_LINE_HEIGHT,  # pour la géométrie, décalage vertical
+      w: for_pfa ? width : abs_width, h: FONTSIZES[:part] + 100, n: mark, fs: FONTSIZES[:part], 
+      gh: for_pfa ? left : abs_left, # pour la géométrie, décalage par rapport au Nord-Ouest
+      gv: (for_pfa ? top : abs_top) + LINE_HEIGHT,  # pour la géométrie, décalage vertical
     }
   end
 
-  def horloge_fin(real_pfa)
-    CODE_HORLOGE_FIN % {
-      w:    Horloge_Width[type],  # largeur (sauf pour actes)
-      l:    PFA_WIDTH - Horloge_Width[type],  # left de l'horloge
-      t:    (real_pfa ? top : abs_top) + 500,  # top de l'horloge (et du décalage)
-      fs:   FontSize_Horloges[type], # Font size
-      mk:   pfa.duration.as_horloge
-    }
-  end
 
   # @return [BashString] Le code pour dessiner l'élément
   # 
@@ -420,7 +424,6 @@ module MagickPFA
       m: mark.gsub(/ /,"\\n"),
     }
 
-
     data_temp.merge!({
       # Noter que ci-dessous on n'utilise pas le @width de l'élément
       # pour avoir des ronds uniformes
@@ -448,7 +451,7 @@ module MagickPFA
     -stroke black
     -fill gray40
     -draw "circle %{l},%{t} %{r},%{b}"
-    \\( -extent %{w}x%{h} -pointsize %{fs} -stroke black -fill black -background white -gravity %{a} 
+    \\( -extent %{w}x%{h} -pointsize %{fs} -stroke black -fill black -background transparent -gravity %{a} 
     label:"%{m}" \\) -geometry +%{lm}+%{tm} -gravity NorthWest -composite
     CMD
 
@@ -461,28 +464,28 @@ module MagickPFA
 
 
 
-  # La marque pour une séquence (un crochet allongé)
-  # 
-  def img_lines_for_real_sequence
-    <<~CMD
-    -strokewidth #{AnyBuilder::BORDERS[:seq]}
-    -stroke #{AnyBuilder::COLORS[:seq]}
-    -fill white
-    -draw "polyline #{left+4},#{top+demiheight} #{left+4},#{bottom} #{right-4},#{bottom} #{right-4},#{top+demiheight}"
-    #{mark_horloge}
-    CMD
-  end
+  # # La marque pour une séquence (un crochet allongé)
+  # # 
+  # def img_lines_for_real_sequence
+  #   <<~CMD
+  #   -strokewidth #{AnyBuilder::BORDERS[:seq]}
+  #   -stroke #{AnyBuilder::COLORS[:seq]}
+  #   -fill white
+  #   -draw "polyline #{left+4},#{top+demiheight} #{left+4},#{bottom} #{right-4},#{bottom} #{right-4},#{top+demiheight}"
+  #   #{mark_horloge}
+  #   CMD
+  # end
 
-  # La marque pour un nœud (un rond/point)
-  def img_lines_for_real_noeud
-    <<~CMD
-    -strokewidth #{AnyBuilder::BORDERS[:noeud]}
-    -stroke #{AnyBuilder::COLORS[:noeud]}
-    -fill white
-    -draw "roundrectangle #{left},#{top} #{right},#{bottom} 10,10"
-    #{mark_horloge}
-    CMD
-  end
+  # # La marque pour un nœud (un rond/point)
+  # def img_lines_for_real_noeud
+  #   <<~CMD
+  #   -strokewidth #{AnyBuilder::BORDERS[:noeud]}
+  #   -stroke #{AnyBuilder::COLORS[:noeud]}
+  #   -fill white
+  #   -draw "roundrectangle #{left},#{top} #{right},#{bottom} 10,10"
+  #   #{mark_horloge}
+  #   CMD
+  # end
 
   RECTIFS = {
     part:         50, 
