@@ -27,7 +27,7 @@ nodes:
     type:         part
     abs_start:    0
     abs_duration: 1/4 # p.e. 30 minutes
-    items:        ['prelude', 'incident_perturbateur', 'incident_declencheur', 'zone_refus', 'pivot1']
+    items:        ['prelude', 'incident_perturbateur', 'incident_declencheur', 'zone_de_refus', 'pivot1']
   preambule:
     printed:      true
     drawn:        false # pas sur le PFA
@@ -57,7 +57,7 @@ nodes:
     description:  "Moment qui déclenche l'histoire, qui permet de définir l'objectif ou la QDF (Question Dramatique Fondamentale)."
     abs_start:    2/24 # p.e. 10 mn
     abs_duration: 1/24 # p.e. 5 mn => fin à 15 mn
-  zone_refus:
+  zone_de_refus:
     printed:      true
     drawn:        false # pas sur le PFA
     required:     false
@@ -88,7 +88,7 @@ nodes:
     abs_start:    1/4
     abs_duration: 1/4
     items: ['premiere_action', 'premier_tiers', 'cle_de_voute']
-  premiere_action:
+  action_1_part1:
     printed:      false
     drawn:        false # pas sur le PFA
     required:     false
@@ -129,7 +129,7 @@ nodes:
     abs_start:    1/2
     abs_duration: 1/4
     items:        ['premiere_action_dev2', 'deuxieme_tiers', 'crise', 'pivot2']
-  premiere_action_dev2:
+  action_1_part2:
     printed:      false
     drawn:        false # pas sur le PFA
     required:     false
@@ -180,7 +180,7 @@ nodes:
     abs_start:    3/4
     abs_duration: 1/4
     items:        ['premiere_action_den', 'climax', 'desinence']
-  premiere_action_denouement:
+  action_1_denouement:
     printed:      false
     drawn:        false # pas sur le PFA
     required:     false

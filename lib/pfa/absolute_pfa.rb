@@ -2,6 +2,12 @@
 # Singleton AbsolutePFA
 # ---------------------
 # 
+# 
+# @note
+# 
+#   Les DATA absolues du paradigme sont définies dans le fichier
+#   PFA_ABSOLUTE_DATA.yaml dans le dossier assets/<LANG>
+# 
 module PFA
 class AbsolutePFAClass
   include Singleton
