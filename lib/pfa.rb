@@ -1,6 +1,7 @@
 def dbg(str)
   STDOUT.write("\n#{str}\n")
 end
+LIB_FOLDER = File.join(__dir__)
 require 'clir'
 require 'yaml'
 require 'singleton'

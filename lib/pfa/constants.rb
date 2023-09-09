@@ -8,7 +8,7 @@ module PFA
   #
   # Chemin d'accès au dossier ASSETS
   # 
-  ASSETS_FOLDER = File.absolute_path(File.join('.','lib','assets'))
+  ASSETS_FOLDER = File.join(LIB_FOLDER,'assets')
 
   #
   # Chemin d'accès au dossier de LANGUE dans les ASSETS
