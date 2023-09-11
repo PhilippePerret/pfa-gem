@@ -1,5 +1,9 @@
 # Change log
 
+## 1.1.0
+
+* Écriture de la table du paradigme de Field Augmenté, de travers.
+
 ## 1.0.3
 
 * Isolation du LIB_FOLDER
