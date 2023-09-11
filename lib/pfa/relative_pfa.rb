@@ -80,6 +80,18 @@ class RelativePFA
     end
   end
 
+  def node(node_key)
+    data[node_key]
+  end
+
+  # --- Predicate Methods ---
+
+  # @return true si le paradigme définit le noeud de clé +node_key+
+  # 
+  def node?(node_key)
+    data.key?(node_key.to_sym)
+  end
+
   # Test la pertinence de la définition de la clé +key+ et produit une
   # erreur éclairante en cas de problème.
   #

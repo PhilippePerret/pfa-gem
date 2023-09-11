@@ -87,7 +87,7 @@ nodes:
     hname:        'DÉV. PART I'
     abs_start:    1/4
     abs_duration: 1/4
-    items: ['premiere_action', 'premier_tiers', 'cle_de_voute']
+    items: ['action_1_part1', 'premier_tiers', 'cle_de_voute']
   action_1_part1:
     printed:      false
     drawn:        false # pas sur le PFA
@@ -128,7 +128,7 @@ nodes:
     hname:        'DÉV. PART II'
     abs_start:    1/2
     abs_duration: 1/4
-    items:        ['premiere_action_dev2', 'deuxieme_tiers', 'crise', 'pivot2']
+    items:        ['action_1_part2', 'second_tiers', 'crise', 'pivot2']
   action_1_part2:
     printed:      false
     drawn:        false # pas sur le PFA
@@ -139,7 +139,7 @@ nodes:
     description:  "Pendant de la première action du développement, après la clé de voûte."
     abs_start:    1/2 + 1/48 # p.e. 60 + 2,5 mn = 62,5 mn
     abs_duration: null
-  deuxieme_tiers:
+  second_tiers:
     printed:      true
     drawn:        true # sur le PFA
     required:     false
@@ -179,7 +179,7 @@ nodes:
     hname:        'DÉNOUEMENT'
     abs_start:    3/4
     abs_duration: 1/4
-    items:        ['premiere_action_den', 'climax', 'desinence']
+    items:        ['action_1_denouement', 'climax', 'desinence']
   action_1_denouement:
     printed:      false
     drawn:        false # pas sur le PFA

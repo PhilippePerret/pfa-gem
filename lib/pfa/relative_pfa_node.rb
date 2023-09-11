@@ -10,8 +10,6 @@ class Node
 
   attr_reader :pfa, :key
 
-  attr_reader :description
-
   def initialize(pfa, key, value = nil)
     @pfa        = pfa
     @key        = key
@@ -20,6 +18,12 @@ class Node
 
   def code_image_magick
     pfa.img_builder.code_image_magick
+  end
+
+  def description(ensure_output = false)
+    @description || begin
+      ensure_output ? "" : nil
+    end
   end
 
   # --- MÉTHODES TEMPORELLES ---
