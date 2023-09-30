@@ -1,5 +1,9 @@
 # Change log
 
+## 1.3.0
+
+* Bon gestion de l'identifiant lorsqu'il y a plusieurs PFAs dans un film.
+
 ## 1.2.0
 
 * gestion des identifiants de PFA pour en avoir plusieurs dans le même dossier (peut aussi servir à faire plusieurs versions).

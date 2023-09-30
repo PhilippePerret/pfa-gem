@@ -23,6 +23,10 @@ class RelativePFA
   # [Hash] Les données du Paradigme de Field Augmenté
   attr_reader :data
 
+  # [Integer] Indice éventuel du PFA (quand il y en a plusieurs dans
+  # un film)
+  attr_reader :pfa_id
+
   # Instanciation du paradigme
   # 
   # @param input_data [Hash|Nil] Données du paradigme fournies à l'instanciation
@@ -33,6 +37,7 @@ class RelativePFA
     # -- Traitement de toutes les données fournies --
     # 
     input_data ||= {}
+    @pfa_id = input_data.delete(:pfa_id) # indice éventuel du PFA
     input_data.each { |k, v| add(k, v) }
   end
 
@@ -49,12 +54,18 @@ class RelativePFA
   # Ajout d'un nœud dans le PFA
   # 
   # On utilise pour le faire : pfa.add(key, value). Si c'est un
-  # nœud, la valeur contient {t: '<horloge>', d: "description"}
+  # nœud, la valeur contient {t: '<horloge>', d: "description"} et
+  # peut-être la clé :pfa_id qui définit l'index du PFA à utiliser
+  # 
+  # @note
+  #   Je crois que maintenant +value+ est toujours un [Hash] définis-
+  #   sant les données de la clé.
+  # 
   # La clé :t peut-être remplacée par :time ou :start_at
   # La clé :d peut-être remplacée par :description
   # 
   def add(key, value)
-    # puts "-> add(#{key.inspect}, #{value.inspect}::#{value.class})".orange
+    puts "-> add(#{key.inspect}, #{value.inspect}::#{value.class})".orange
     key = key.to_sym
     if AbsolutePFA.data[:nodes].key?(key)
       #
