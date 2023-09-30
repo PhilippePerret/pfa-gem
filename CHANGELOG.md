@@ -1,5 +1,9 @@
 # Change log
 
+## 1.2.0
+
+* gestion des identifiants de PFA pour en avoir plusieurs dans le même dossier (peut aussi servir à faire plusieurs versions).
+
 ## 1.1.0
 
 * Écriture de la table du paradigme de Field Augmenté, de travers.

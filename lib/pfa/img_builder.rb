@@ -178,8 +178,7 @@ class ImgBuilder < AnyBuilder
 
   # @return \String Chemin d'accès au fichier de l'image finale
   def image_path
-    @image_path ||= File.expand_path(File.join('.','pfa.jpg'))
-    # @image_path ||= File.expand_path(File.join('.','pfa.img'))
+    @image_path ||= File.expand_path(File.join('.',"pfa#{"_#{pfa.pfa_id}" if pfa.pfa_id}.jpg"))
   end
 
   # @private

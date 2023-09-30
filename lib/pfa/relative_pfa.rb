@@ -182,7 +182,9 @@ class RelativePFA
   # --- Helper Methods ---
 
 
+  # --- Fixed Data ---
 
+  def pfa_id; data[:pfa_id] end
 
   # --- Output Methods ---
 
