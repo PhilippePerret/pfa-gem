@@ -1,5 +1,9 @@
 # Change log
 
+## 1.3.1
+
+* clé `action_1_...` changée pour `action1_...` (pour plus de cohérence avec l'écriture générale).
+
 ## 1.3.0
 
 * Bon gestion de l'identifiant lorsqu'il y a plusieurs PFAs dans un film.
