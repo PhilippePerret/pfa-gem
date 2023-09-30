@@ -26,6 +26,7 @@ class RelativePFA
   # [Integer] Indice éventuel du PFA (quand il y en a plusieurs dans
   # un film)
   attr_reader :pfa_id
+  alias :id :pfa_id
 
   # Instanciation du paradigme
   # 
@@ -38,6 +39,7 @@ class RelativePFA
     # 
     input_data ||= {}
     @pfa_id = input_data.delete(:pfa_id) # indice éventuel du PFA
+
     input_data.each { |k, v| add(k, v) }
   end
 
@@ -194,7 +196,6 @@ class RelativePFA
 
   # --- Fixed Data ---
 
-  def pfa_id; data[:pfa_id] end
 
   # --- Output Methods ---
 
