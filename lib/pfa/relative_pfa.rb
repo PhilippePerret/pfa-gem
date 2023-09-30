@@ -65,7 +65,6 @@ class RelativePFA
   # La clé :d peut-être remplacée par :description
   # 
   def add(key, value)
-    puts "-> add(#{key.inspect}, #{value.inspect}::#{value.class})".orange
     key = key.to_sym
     if AbsolutePFA.data[:nodes].key?(key)
       #

@@ -1,5 +1,9 @@
 # Change log
 
+## 1.3.2
+
+* Simple suppressions d'un message intempestif.
+
 ## 1.3.1
 
 * clé `action_1_...` changée pour `action1_...` (pour plus de cohérence avec l'écriture générale).
