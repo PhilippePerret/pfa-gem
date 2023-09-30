@@ -87,8 +87,8 @@ nodes:
     hname:        'DÉV. PART I'
     abs_start:    1/4
     abs_duration: 1/4
-    items: ['action_1_part1', 'premier_tiers', 'cle_de_voute']
-  action_1_part1:
+    items: ['action1_part1', 'premier_tiers', 'cle_de_voute']
+  action1_part1:
     printed:      false
     drawn:        false # pas sur le PFA
     required:     false
@@ -128,8 +128,8 @@ nodes:
     hname:        'DÉV. PART II'
     abs_start:    1/2
     abs_duration: 1/4
-    items:        ['action_1_part2', 'second_tiers', 'crise', 'pivot2']
-  action_1_part2:
+    items:        ['action1_part2', 'second_tiers', 'crise', 'pivot2']
+  action1_part2:
     printed:      false
     drawn:        false # pas sur le PFA
     required:     false
@@ -179,8 +179,8 @@ nodes:
     hname:        'DÉNOUEMENT'
     abs_start:    3/4
     abs_duration: 1/4
-    items:        ['action_1_denouement', 'climax', 'desinence']
-  action_1_denouement:
+    items:        ['action1_denouement', 'climax', 'desinence']
+  action1_denouement:
     printed:      false
     drawn:        false # pas sur le PFA
     required:     false
