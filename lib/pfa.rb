@@ -9,6 +9,7 @@ end
 require 'clir'
 require 'yaml'
 require 'singleton'
+require 'log_in_file'
 require "pfa/version"
 require 'pfa/constants'
 require 'pfa/errors_manager'
