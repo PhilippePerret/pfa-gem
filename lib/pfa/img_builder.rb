@@ -122,7 +122,7 @@ class ImgBuilder < AnyBuilder
     # Chemin d'accès au fichier final
     # (en le protégeant)
     # 
-    @code_image_magick << "\"#{image_path.gsub(/ /, "\\ ")}\""
+    @code_image_magick << "\"#{image_path}\""
 
     # 
     # On transforme le code ImageMagick en ajoutant des retours

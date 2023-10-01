@@ -1,5 +1,9 @@
 # Change log
 
+## 1.4.2
+
+* Le path de l'image est bien escapé (c'est-à-dire qu'il ne l'est plus puisqu'il est entouré de guillemets réconfortants)
+
 ## 1.4.0
 
 * Ajout de mon gem 'log_in_file' pour logger la commande construite.
