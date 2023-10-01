@@ -1,5 +1,9 @@
 # Change log
 
+## 1.4.0
+
+* Ajout de mon gem 'log_in_file' pour logger la commande construite.
+
 ## 1.3.2
 
 * Simple suppressions d'un message intempestif.

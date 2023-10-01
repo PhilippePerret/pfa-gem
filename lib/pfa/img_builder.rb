@@ -137,6 +137,9 @@ class ImgBuilder < AnyBuilder
     # (je ne parviens pas à mettre la commande sur plusieurs lignes,
     #  même avec la contre-balance…)
     cmd_finale = @code_image_magick.split("\n").compact.join(" ")
+
+    # gem 'log_in_file'
+    logif("Command finale :\n<<<<<<<<<<\n#{cmd_finale}\n>>>>>>>>>>")
     
     
     # Pour débugger facilement, on met les numéros des lignes
@@ -159,7 +162,7 @@ class ImgBuilder < AnyBuilder
     # L'image doit avoir été créée
     # 
     File.exist?(image_path) || raise(PFAFatalError.new(5000, **{path: image_path}))
-    puts "Image #{image_path.inspect} produite avec succès."
+    puts "Image #{image_path.inspect} produite avec succès.".vert
 
   end #/ build
 

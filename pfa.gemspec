@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'yaml'
   s.add_dependency 'clir'
   s.add_dependency 'singleton'
+  s.add_dependency 'log_in_file'
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'minitest-color'
 
