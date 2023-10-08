@@ -90,7 +90,7 @@ class TableBuilder < AnyBuilder
         #
         # Il faut écrire la table de travers
         # 
-        rotate(90, :origin => [bounds.width,bounds.height/2]) do 
+        rotate(90, :origin => [bounds.width - 20,bounds.height/2 + 2]) do 
           # text "La table complète du PFA"
           table(data_lines, data_table) do |tb|
             tb.row(0).style(borders:[:top, :left, :right], border_width:1, align: :center)
