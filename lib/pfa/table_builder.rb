@@ -80,12 +80,13 @@ class TableBuilder < AnyBuilder
     #
     # Une fonte est-elle définie ?
     # 
-    options.key?(:font) || options.merge!(font: {name:'Arial', size:8})
-    options[:font][:name] ||= 'Arial'
-    options[:font][:size] ||= 8
+    options.key?(:font) || options.merge!(font: {name:'Arial', size:8, style: :normal})
+    options[:font][:name]   ||= 'Arial'
+    options[:font][:size]   ||= 8
+    options[:font][:style]  ||= :normal
 
     pdf.update do
-      font(options[:font][:name], **{size: options[:font][:size]})
+      font(options[:font][:name], **{size: options[:font][:size], style:options[:font][:style]})
       if options[:rotated]
         #
         # Il faut écrire la table de travers
