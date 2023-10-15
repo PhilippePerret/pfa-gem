@@ -1,5 +1,9 @@
 # Change log
 
+## 1.5.0
+
+* Ajout des QDF et RDF aux données du paradigme de Field augmenté.
+
 ## 1.4.2
 
 * Le path de l'image est bien escapé (c'est-à-dire qu'il ne l'est plus puisqu'il est entouré de guillemets réconfortants)

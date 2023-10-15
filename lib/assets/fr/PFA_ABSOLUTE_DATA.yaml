@@ -77,7 +77,16 @@ nodes:
     abs_start:    1/4 - 1/24 # p.e. 30 mn - 5 mn = 25 mn
     abs_duration: 1/24 # p.e. 5 mn => fin à 30 mn
     description:  "Moment de l'histoire où le personnage accepte son objectif, ce qui fait basculer le récit dans le développement."
-
+  qdf:
+    printed:      true
+    drawn:        true
+    required:     false
+    type:         noeud
+    id:           'QDF'
+    hname:        'Question Dramatique Fondamentale'
+    description:  "Question principale posée en début d’histoire qui tiendra l’auditoire en haleine jusqu’à sa réponse à la toute fin. Si l’histoire comporte un objectif, la QDF, synthétiquement et non spécifiquement, pose la question “Le personnage atteindra-t-il son objectif ?”."
+    abs_start:    1/4 - 1/24
+    abs_duration: 1/24
   # --- DÉVELOPPEMENT PARTIE 1 ---
   developpement_part1:
     printed:      true
@@ -200,6 +209,16 @@ nodes:
     description:  "Scène d'opposition frontale entre le protagoniste et les forces antagonistes. Donne ou permet de donnée la RDF (Réponse Dramatique Fondamentale)."
     abs_start:    1 - 3/24 # p.e. 120 mn - 15 mn = 105 mn
     abs_duration: 2/24 # p.e. 10 mn => fin à 115 mn
+  rdf:
+    printed:      true
+    drawn:        true
+    required:     false
+    type:         noeud
+    id:           'RDF'
+    hname:        'Réponse Dramatique Fondamentale'
+    description:  'Réponse donnée à la QDF posée en début d’histoire, elle est positive lorsque l’objectif (s’il existe) est atteint et négatif dans le cas contraire.'
+    abs_start:    1 - 3/24
+    abs_duration: 3/24
   desinence:
     printed:      true
     drawn:        false # pas sur le PFA
